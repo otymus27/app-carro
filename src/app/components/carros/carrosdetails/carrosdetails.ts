@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {MdbFormsModule} from 'mdb-angular-ui-kit/forms';
@@ -6,6 +6,7 @@ import {Carro} from '../../../models/carro';
 
 @Component({
   selector: 'app-carrosdetails',
+  standalone: true,
   imports: [
     RouterLink,
     FormsModule,
@@ -16,39 +17,15 @@ import {Carro} from '../../../models/carro';
 })
 export class Carrosdetails {
 
-  //aqui é uma injeção de dependencia parecido o autowired do java
-  router = inject(Router);
-  router1 = inject(ActivatedRoute);
+  @Input() carro!: Carro;
+  @Input() onSave!: (carro: Carro) => void;
+  @Input() onCancel!: () => void;
 
-
-  //carro: Carro = new Carro(1,'Fiesta','Ford','Preto',2012);
-  carro: Carro = new Carro(0, '', '', '', new Date().getFullYear());
-
-  //acessar a variavel de rota
-  constructor() {
-    let id = this.router1.snapshot.params['id'];
-    if (id>0){
-      this.buscarPorId(id);
-    }
-
+  salvar() {
+    this.onSave?.(this.carro);
   }
 
-  buscarPorId(id: number){
-    let carroRetornado: Carro = new Carro(1,'Fiesta','Ford','Preto',2012);
-    this.carro = carroRetornado;
+  cancelar() {
+    this.onCancel?.();
   }
-
-
-  salvar(){
-    if (this.carro.id > 0){
-      alert('Registro atualizado com sucesso!');
-      this.router.navigate(['admin/carros'],{state: {carroEditado: this.carro}});
-    }else {
-      alert("Registro salvo com sucesso!");
-      //redirecionar para pagina
-      this.router.navigate(['admin/carros'],{state: {carroNovo: this.carro}});
-    }
-
-  } ;
-
 }

@@ -6,12 +6,9 @@
       <div class="card">
         <div class="card-body">
           <h1>Listagem de Carros</h1>
-<!--          <div class="direita">-->
-<!--            <button type="button" class="btn btn-primary btn-rounded" mdbRipple routerLink="/admin/carros/new">Novo</button>-->
-<!--          </div>-->
 
           <div class="direita">
-            <button type="button" class="btn btn-primary btn-rounded" mdbRipple (click)="CadastrarModal()">Novo Modal</button>
+            <button type="button" class="btn btn-primary btn-rounded" mdbRipple (click)="CadastrarModal()">Novo</button>
           </div>
 
           <table class="table table-striped">
@@ -33,7 +30,7 @@
                   <td>{{carro.cor}}</td>
                   <td>{{carro.ano}}</td>
                   <td class="direita">
-                    <button type="button" class="btn btn-primary btn-rounded" mdbRipple routerLink="/admin/carros/edit/{{carro.id}}">Editar</button>
+                    <button type="button" class="btn btn-primary btn-rounded" mdbRipple (click)="editarModal(carro)">Editar</button>
                     <button type="button" class="btn btn-danger btn-rounded" mdbRipple (click)="excluir(carro)">Excluir</button>
                   </td>
 
@@ -52,20 +49,21 @@
 
 <ng-template #modalCarroDetalhe>
   <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+    <h5 class="modal-title">{{ carroSelecionado.id > 0 ? 'Editar Carro' : 'Novo Carro' }}</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="cancelarModal()"></button>
     <button
       type="button"
       class="btn-close"
       aria-label="Close"
-      (click)="modalRef.close()"
+      (click)="modalRef?.close()"
     ></button>
   </div>
-  <div class="modal-body">...</div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modalRef.close()">
-      Close
-    </button>
-    <button type="button" class="btn btn-primary">Save changes</button>
+  <div class="modal-body">
+    <app-carrosdetails
+      [carro]="carroSelecionado"
+      [onSave]="salvarCarro.bind(this)"
+      [onCancel]="cancelarModal.bind(this)">
+    </app-carrosdetails>
   </div>
 
 
