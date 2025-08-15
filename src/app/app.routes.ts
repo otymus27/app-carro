@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
-import { Carroslist } from './components/carroslist/carroslist';
-import {Dashboard} from './components/dashboard/dashboard';
+import { Carroslist } from './components/carros/carroslist/carroslist';
 import {Login} from './components/layout/login/login';
 import {Principal} from './components/layout/principal/principal';
 import {Carrosdetails} from './components/carros/carrosdetails/carrosdetails';
