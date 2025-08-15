@@ -17,7 +17,18 @@
             </mdb-form-control>
             <br>
 
+            <mdb-form-control>
+              <input mdbInput type="text" id="cor" class="form-control" placeholder="Digite a cor" [(ngModel)]="carro.cor"  />
+            </mdb-form-control>
+            <br>
+
+            <mdb-form-control>
+              <input mdbInput type="text" id="ano" class="form-control" placeholder="Digite o ano" [(ngModel)]="carro.ano"  />
+            </mdb-form-control>
+            <br>
+
             <button type="button" class="btn btn-primary btn-rounded" mdbRipple (click)="salvar()">Salvar</button>
+            <button type="button" class="btn btn-primary btn-rounded" mdbRipple routerLink="/admin/carros">Cancelar</button>
 
         </div>
 

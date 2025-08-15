@@ -13,35 +13,32 @@ import {RouterLink} from '@angular/router';
 export class Carroslist {
   lista: Carro[]=[];
 
+
   constructor() {
-    let carro: Carro = new Carro();
 
-    carro.id = 1;
-    carro.modelo = 'FIT';
-    carro.marca = 'HONDA';
-    carro.cor = "PRETO";
-    carro.ano = 2012;
 
-    let carro1: Carro = new Carro();
-    carro1.id = 2;
-    carro1.modelo = 'FUSION';
-    carro1.marca = 'FORD';
-    carro1.cor = "AZUL";
-    carro1.ano = 2013;
+    this.lista.push(new Carro(1,'Fiesta','Ford','Preto',2012));
+    this.lista.push(new Carro(2,'Honda','FIT','Preto',2013));
+    this.lista.push(new Carro(3,'Astra','GM','Preto',2014));
 
-    let carro2: Carro = new Carro();
-    carro2.id = 3;
-    carro2.modelo = 'ASTRA';
-    carro2.marca = 'GM';
-    carro2.cor = "BRANCO";
-    carro2.ano = 2006;
+    let carroNovo = history.state.carroNovo;
+    let carroEditado = history.state.carroEditado;
 
-    this.lista.push(carro);
-    this.lista.push(carro1);
-    this.lista.push(carro2);
+    if(carroNovo!=null){
+      carroNovo.id=555;
+      this.lista.push(carroNovo)
+    }
+
+    if(carroEditado!=null){
+      let indice = this.lista.findIndex(x => x.id == carroEditado.id);
+      this.lista[indice] = carroEditado;
+    }
   }
 
-  excluir() {
-    //implementar metodo aqui
+  excluir(carro: Carro) {
+    if (confirm('Deseja excluir este registro?')){
+      let indice = this.lista.findIndex((elemento: Carro) => elemento.id === carro.id);
+      this.lista.splice(indice, 1);
+    }
   }
 }
