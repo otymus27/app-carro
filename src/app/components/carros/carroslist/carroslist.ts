@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, inject, TemplateRef, ViewChild} from '@angular/core';
 import {Carro} from '../../../models/carro';
 import {RouterLink} from '@angular/router';
+import {MdbModalRef, MdbModalService} from 'mdb-angular-ui-kit/modal';
 
 @Component({
   selector: 'app-carroslist',
@@ -12,6 +13,11 @@ import {RouterLink} from '@angular/router';
 })
 export class Carroslist {
   lista: Carro[]=[];
+
+  //configuração de elementos para modal
+  modalService = inject(MdbModalService);//para conseguir abrir a modal
+  @ViewChild("modalCarroDetalhe") modalCarroDetalhe!: TemplateRef<any>;
+  modalRef!: MdbModalRef<any>;
 
 
   constructor() {
@@ -40,5 +46,9 @@ export class Carroslist {
       let indice = this.lista.findIndex((elemento: Carro) => elemento.id === carro.id);
       this.lista.splice(indice, 1);
     }
+  }
+
+  CadastrarModal() {
+    this.modalService.open(this.modalCarroDetalhe);
   }
 }
