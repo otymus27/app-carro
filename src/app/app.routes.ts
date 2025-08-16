@@ -5,6 +5,7 @@ import {Principal} from './components/layout/principal/principal';
 import {Carrosdetails} from './components/carros/carrosdetails/carrosdetails';
 import {Marcaslist} from './components/marcas/marcaslist/marcaslist';
 import {Marcasdetails} from './components/marcas/marcasdetails/marcasdetails';
+import { ProprietarioComponent } from './components/proprietario/proprietario.component';
 
 // rota para acessar carroslist
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
       { path: 'marcas', component: Marcaslist},
       { path: 'marcas/new', component: Marcasdetails},
       { path: 'marcas/edit/:id', component: Marcasdetails},
+      { path: 'proprietarios', component: ProprietarioComponent},
     ]},
   { path: 'carros', component: Carroslist }
 ];

@@ -1,0 +1,96 @@
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <h1>Listagem de Proprietários</h1>
+      <button class="btn btn-primary" (click)="cadastrarModal()">Novo Proprietário</button>
+
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Telefone</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+           @for (proprietario of lista; track proprietario.id) {
+          <tr >       
+            <td>{{ proprietario.nome }}</td>
+            <td>{{ proprietario.cpf | cpfMask }}</td>
+            <td>{{ proprietario.telefone | telefoneMask }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm" (click)="editarModal(proprietario)">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="excluir(proprietario)">Excluir</button>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalProprietarioDetalhe>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{ proprietarioSelecionado.id > 0 ? 'Editar Proprietário' : 'Novo Proprietário' }}
+    </h5>
+    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
+  </div>
+
+  <div class="modal-body">
+    <form #form="ngForm" (ngSubmit)="salvarProprietario(proprietarioSelecionado, form)">
+      
+      <!-- Nome -->
+      <mdb-form-control>
+        <input
+          mdbInput
+          placeholder="Nome"
+          [(ngModel)]="proprietarioSelecionado.nome"
+          name="nome"
+          required
+        />
+      </mdb-form-control>
+      <div *ngIf="form.submitted && !proprietarioSelecionado.nome?.trim()" class="text-danger mt-1">
+        Nome é obrigatório
+      </div>
+
+      <!-- CPF -->
+      <mdb-form-control class="mt-2">
+        <input
+          mdbInput
+          placeholder="CPF"
+          [(ngModel)]="proprietarioSelecionado.cpf"
+          name="cpf"
+          mask="000.000.000-00"
+          required
+        />
+      </mdb-form-control>
+      <div *ngIf="form.submitted && !proprietarioSelecionado.cpf?.trim()" class="text-danger mt-1">
+        CPF é obrigatório
+      </div>
+
+      <!-- Telefone -->
+      <mdb-form-control class="mt-2">
+        <input
+          mdbInput
+          placeholder="Telefone"
+          [(ngModel)]="proprietarioSelecionado.telefone"
+          name="telefone"
+          mask="(00) 00000-0000"
+          required
+        />
+      </mdb-form-control>
+      <div *ngIf="form.submitted && !proprietarioSelecionado.telefone?.trim()" class="text-danger mt-1">
+        Telefone é obrigatório
+      </div>
+
+      <!-- Botões -->
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <button type="submit" class="btn btn-primary" (click)="proprietarioSelecionado">Salvar</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelarModal()">Cancelar</button>        
+      </div>
+    </form>
+  </div>
+</ng-template>

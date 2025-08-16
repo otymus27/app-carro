@@ -7,7 +7,7 @@ import {CarroService} from '../../../services/carro.service';
 
 @Component({
   selector: 'app-carroslist',
-  imports: [RouterLink, MdbModalModule, Carrosdetails], // ✅ Carrosdetails precisa estar aqui
+  imports: [ MdbModalModule, Carrosdetails], // ✅ Carrosdetails precisa estar aqui
   templateUrl: './carroslist.html',
   styleUrl: './carroslist.scss'
 })

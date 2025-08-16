@@ -5,7 +5,12 @@ import { MdbModalRef, MdbModalService, MdbModalModule } from 'mdb-angular-ui-kit
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
+// fora do @Component
+interface ResponseMsg {
+  mensagem: string;
+}
 @Component({
   selector: 'app-marcaslist',
   imports: [
@@ -20,7 +25,8 @@ import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 export class Marcaslist {
 
   lista: Marca[] = [];
-  marcaSelecionada!: Marca;
+  
+  marcaSelecionada: Marca = { id: 0, nome: '' };
 
   marcaService = inject(MarcaService);
   modalService = inject(MdbModalService);
@@ -37,7 +43,7 @@ export class Marcaslist {
   }
 
   CadastrarModal() {
-    this.marcaSelecionada = { id: 0, nome: '' };
+    this.marcaSelecionada = { id:0, nome: '' };
     this.modalRef = this.modalService.open(this.modalMarcaDetalhe);
   }
 
@@ -50,34 +56,40 @@ export class Marcaslist {
     this.modalRef.close();
   }
 
-  salvarMarca(marca: Marca) {
+  salvarMarca(marca: Marca) {   
+    const isNovaMarca = !marca.id || marca.id <= 0;
 
-    console.log('Marca a salvar:', marca); // ✅ verifique todos os campos
+    if (isNovaMarca) {
+      // Cria registro sem id
+      const novaMarca: Partial<Marca> = { nome: marca.nome };
+      this.marcaService.save(novaMarca).subscribe({
+        next: (res: Marca) => {        
+          alert(`Registro cadastrada com sucesso!`);
+          this.listar(); // Atualiza a lista após cadastro
+          this.modalRef?.close(); // aqui fecha o modal
+        },
+        error: (err) => {
+          console.error("Erro ao salvar registro:", err);
+          alert("Erro ao salvar registro");
+        }
+      });
+    } else {
+      // Atualiza marca existente - envia Marca completo
+      this.marcaService.update(marca, marca.id!).subscribe({
+        next: (msg) => {
+          alert(msg || 'Operação realizada com sucesso!');
+          this.listar();
+          this.modalRef.close();
+        },
+        error: (err) => {
+          const erroMsg = err?.error || 'Erro desconhecido!';
+          alert(`Erro ${err.status || ''}: ${erroMsg}`);
+        }
+      });
+    }
+  }
 
-    if (!marca.id || marca.id <= 0) {
-    // marca nova
-    const novaMarca = { ...marca }; // cria cópia
-    delete novaMarca.id;            // remove id
-    this.marcaService.save(novaMarca).subscribe({
-      next: (msg) => {
-        alert(msg);
-        this.listar();
-        this.modalRef.close();
-      },
-      error: (err) => alert(`Erro ${err.status}: ${err.error}`)
-    });
-  } else {
-    // marca existente
-    this.marcaService.update(marca, marca.id).subscribe({
-      next: (msg) => {
-        alert(msg);
-        this.listar();
-        this.modalRef.close();
-      },
-      error: (err) => alert(`Erro ${err.status}: ${err.error}`)
-    });
-  }
-  }
+
 
   excluir(marca: Marca) {
     if (!confirm(`Deseja excluir ${marca.nome}?`)) return;

@@ -27,9 +27,9 @@
   </div>
 </div>
 
-<ng-template #modalMarcaDetalhe>
+<ng-template #modalMarcaDetalhe *ngIf="marcaSelecionada">
   <div class="modal-header">
-    <h5 class="modal-title">{{ marcaSelecionada.id > 0 ? 'Editar Marca' : 'Nova Marca' }}</h5>
+    <h5 class="modal-title">{{ marcaSelecionada.id > 0 ? 'Editar Marca' : 'Adicionar Marca' }}</h5>
     <button type="button" class="btn-close" (click)="cancelarModal()"></button>
   </div>
   <div class="modal-body">
