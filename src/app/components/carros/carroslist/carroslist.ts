@@ -3,6 +3,7 @@ import {Carro} from '../../../models/carro';
 import {RouterLink} from '@angular/router';
 import { MdbModalRef, MdbModalService, MdbModalModule } from 'mdb-angular-ui-kit/modal';
 import {Carrosdetails} from '../carrosdetails/carrosdetails';
+import {CarroService} from '../../../services/carro.service';
 
 @Component({
   selector: 'app-carroslist',
@@ -17,22 +18,39 @@ export class Carroslist {
    modalService = inject(MdbModalService);//para conseguir abrir a modal
    @ViewChild("modalCarroDetalhe") modalCarroDetalhe!: TemplateRef<any>;
    modalRef!: MdbModalRef<any>;
-  carroSelecionado!: Carro;
+   carroSelecionado!: Carro;
+
+   carroService = inject(CarroService);
 
   constructor() {
-    this.lista = [
-      new Carro(1, 'Fiesta', 'Ford', 'Preto', 2012),
-      new Carro(2, 'FIT', 'Honda', 'Preto', 2013),
-      new Carro(3, 'Astra', 'GM', 'Preto', 2014)
-    ];
+    this.listar();    
   }
 
-  excluir(carro: Carro) {
-    if (confirm('Deseja excluir este registro?')){
-      let indice = this.lista.findIndex((elemento: Carro) => elemento.id === carro.id);
-      this.lista.splice(indice, 1);
-    }
-  }
+ listar(): void {
+    this.carroService.listar().subscribe({
+      next: lista => { // quando o backend retornar o que se espera
+        this.lista = lista;
+      },
+      error: error => { // quando ocorrer qualquer erro de comunicação com o backend
+        alert('Algo errado no serviço listar!')
+      }
+    })
+ }
+
+ excluir(carro: Carro){
+    this.carroService.excluir(carro.id).subscribe({
+      next: mensagem => { // quando o backend retornar o que se espera
+        mensagem = mensagem || 'Carro excluído com sucesso!';
+        alert(mensagem);
+        this.listar(); // Atualiza a lista após exclusão
+      },
+      error: error => { // quando ocorrer qualquer erro de comunicação com o backend
+        alert('Algo errado no serviço excluir!')
+      }
+    })
+ }
+
+  
 
   CadastrarModal() {
     this.carroSelecionado = new Carro(0, '', '', '', new Date().getFullYear());

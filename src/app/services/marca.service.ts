@@ -1,0 +1,38 @@
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import { Marca } from '../models/marca';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MarcaService {
+
+  http = inject(HttpClient);
+
+  API = 'http://localhost:8081/api/marca';
+ 
+
+  constructor() { }
+
+  listar(): Observable<Marca[]>{
+    return this.http.get<Marca[]>(this.API );
+  }
+
+  excluir(id:number): Observable<string> {
+    return this.http.delete<string>(this.API + "/"+id, {responseType: 'text' as 'json'});
+  }
+
+  save(marca: Marca): Observable<string> {
+    return this.http.post(this.API , marca, {responseType: 'text'});
+  }
+
+  update(marca: Marca, id:number): Observable<string> {
+    return this.http.put<string>(this.API + "/"+id, marca, {responseType: 'text' as 'json'});
+  }
+  
+
+  buscarPorId(id: number): Observable<Marca> {
+    return this.http.get<Marca>(this.API + "/"+id);
+  }
+}

@@ -1,1 +1,46 @@
-<p>marcaslist works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <h1>Listagem de Marcas</h1>
+      <button class="btn btn-primary" (click)="CadastrarModal()">Nova Marca</button>
+
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (marca of lista; track marca.id) {
+            <tr>
+              <td>{{ marca.nome }}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="editarModal(marca)">Editar</button>
+                <button class="btn btn-danger btn-sm" (click)="excluir(marca)">Excluir</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalMarcaDetalhe>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ marcaSelecionada.id > 0 ? 'Editar Marca' : 'Nova Marca' }}</h5>
+    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
+  </div>
+  <div class="modal-body">
+    <mdb-form-control>
+      <input mdbInput placeholder="Nome" [(ngModel)]="marcaSelecionada.nome" />
+    </mdb-form-control>
+
+    <div class="d-flex justify-content-end mt-3 gap-2">
+      <button class="btn btn-primary" (click)="salvarMarca(marcaSelecionada)">Salvar</button>
+      <button class="btn btn-secondary" (click)="cancelarModal()">Cancelar</button>
+    </div>
+  </div>
+</ng-template>
+

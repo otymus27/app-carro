@@ -23,7 +23,7 @@
             </thead>
 
             <tbody>
-              @for (carro of lista; track $index){
+              @for (carro of lista; track carro.id){
                 <tr>
                   <td>{{carro.modelo}}</td>
                   <td>{{carro.marca}}</td>
