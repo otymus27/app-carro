@@ -1,28 +1,23 @@
 import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
-import { Marca } from '../../../models/marca';
-import { MarcaService } from '../../../services/marca.service';
-import { MdbModalRef, MdbModalService, MdbModalModule } from 'mdb-angular-ui-kit/modal';
+import { MarcaService } from '../../services/marca.service';
+import { MdbModalModule, MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit/modal';
+import { Marca } from '../../models/marca';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
-import { HttpErrorResponse } from '@angular/common/http';
 
-// fora do @Component
-interface ResponseMsg {
-  mensagem: string;
-}
 @Component({
-  selector: 'app-marcaslist',
+  selector: 'app-marca',
   imports: [
     MdbModalModule,
     CommonModule,
     FormsModule,       // ✅ necessário para [(ngModel)]
     MdbFormsModule     // ✅ necessário para mdbInput
   ],
-  templateUrl: './marcaslist.html',
-  styleUrl: './marcaslist.scss'
+  templateUrl: './marca.component.html',
+  styleUrl: './marca.component.scss'
 })
-export class Marcaslist {
+export class MarcaComponent {
 
   lista: Marca[] = [];
   

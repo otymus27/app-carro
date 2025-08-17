@@ -1,0 +1,86 @@
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <h1>Listagem de Carros</h1>
+      <button class="btn btn-primary" (click)="cadastrarModal()">Novo Carro</button>
+
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th>Modelo</th>
+            <th>Marca</th>
+            <th>Cor</th>
+            <th>Ano</th>
+            <th>Proprietários</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (carro of lista; track carro.id) {
+          <tr>
+            <td>{{ carro.modelo }}</td>
+            <td>{{ carro.marca.nome }}</td> <!-- marca é objeto -->          
+            <td>{{ carro.cor }}</td>
+            <td>{{ carro.ano }}</td>
+            <td>
+              @for (p of carro.proprietarios; track p.id) {
+                {{ p.nome }}<span *ngIf="!$last">, </span>
+              }
+            </td>
+            <td>
+              <button class="btn btn-primary btn-sm" (click)="editarModal(carro)">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="excluir(carro)">Excluir</button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalCarroDetalhe>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ carroSelecionado.id > 0 ? 'Editar Carro' : 'Novo Carro' }}</h5>
+    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
+  </div>
+  <div class="modal-body">
+    <form #form="ngForm" (ngSubmit)="salvarCarro(carroSelecionado, form)">
+      <!-- Marca como select -->
+      <mdb-form-control class="mt-2">
+        <select mdbInput class="form-select" [(ngModel)]="carroSelecionado.marca" name="marca" required>
+          @for (marca of marcas; track marca.id) {
+            <option [ngValue]="marca">{{ marca.nome }}</option>
+          }
+        </select>
+      </mdb-form-control>
+
+      <mdb-form-control class="mt-2">
+        <input mdbInput placeholder="Modelo" [(ngModel)]="carroSelecionado.modelo" name="modelo" required />
+      </mdb-form-control>
+
+     <mdb-form-control class="mt-2">
+        <input mdbInput placeholder="Cor" [(ngModel)]="carroSelecionado.cor" name="cor" required />
+      </mdb-form-control>
+
+      <mdb-form-control class="mt-2">
+        <input mdbInput type="number" placeholder="Ano" [(ngModel)]="carroSelecionado.ano" name="ano" required />
+      </mdb-form-control>
+      <!-- Proprietários como multi-select -->
+      <mdb-form-control class="mt-2">
+        <select mdbInput class="form-select" [(ngModel)]="carroSelecionado.proprietarios" name="proprietarios" multiple required>
+          @for (proprietario of proprietarios; track proprietario.id) {
+            <option [ngValue]="proprietario">{{ proprietario.nome }}</option>
+          }
+        </select>
+      </mdb-form-control>
+
+
+      <!-- Botões -->
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <button type="submit" class="btn btn-primary" (click)="carroSelecionado">Salvar</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelarModal()">Cancelar</button>        
+      </div>
+    </form>
+  </div>
+</ng-template>

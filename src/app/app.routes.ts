@@ -1,11 +1,9 @@
 import { Routes } from '@angular/router';
-import { Carroslist } from './components/carros/carroslist/carroslist';
 import {Login} from './components/layout/login/login';
 import {Principal} from './components/layout/principal/principal';
-import {Carrosdetails} from './components/carros/carrosdetails/carrosdetails';
-import {Marcaslist} from './components/marcas/marcaslist/marcaslist';
-import {Marcasdetails} from './components/marcas/marcasdetails/marcasdetails';
 import { ProprietarioComponent } from './components/proprietario/proprietario.component';
+import { MarcaComponent } from './components/marca/marca.component';
+import { CarroComponent } from './components/carro/carro.component';
 
 // rota para acessar carroslist
 export const routes: Routes = [
@@ -13,13 +11,9 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: Login},
   { path: 'admin', component: Principal, children: [
-      { path: 'carros', component: Carroslist},
-      { path: 'carros/new', component: Carrosdetails},
-      { path: 'carros/edit/:id', component: Carrosdetails},
-      { path: 'marcas', component: Marcaslist},
-      { path: 'marcas/new', component: Marcasdetails},
-      { path: 'marcas/edit/:id', component: Marcasdetails},
+      { path: 'carros', component: CarroComponent},     
       { path: 'proprietarios', component: ProprietarioComponent},
-    ]},
-  { path: 'carros', component: Carroslist }
+      { path: 'marcas', component: MarcaComponent},
+  ]},
+  
 ];
