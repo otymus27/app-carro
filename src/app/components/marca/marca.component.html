@@ -1,9 +1,9 @@
-<br/>
+<br />
 <div class="container">
   <div class="card">
     <div class="card-body">
       <h1>Listagem de Marcas</h1>
-      <button class="btn btn-primary" (click)="CadastrarModal()">Nova Marca</button>
+      <button class="btn btn-primary" (click)="CadastrarModal()">Novo</button>
 
       <table class="table table-striped mt-3">
         <thead>
@@ -14,13 +14,20 @@
         </thead>
         <tbody>
           @for (marca of lista; track marca.id) {
-            <tr>
-              <td>{{ marca.nome }}</td>
-              <td>
-                <button class="btn btn-primary btn-sm" (click)="editarModal(marca)">Editar</button>
-                <button class="btn btn-danger btn-sm" (click)="excluir(marca)">Excluir</button>
-              </td>
-            </tr>
+          <tr>
+            <td>{{ marca.nome }}</td>
+            <td>
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="editarModal(marca)"
+              >
+                Editar
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="excluir(marca)">
+                Excluir
+              </button>
+            </td>
+          </tr>
           }
         </tbody>
       </table>
@@ -29,20 +36,57 @@
 </div>
 
 <ng-template #modalMarcaDetalhe *ngIf="marcaSelecionada">
-  <div class="modal-header">
-    <h5 class="modal-title">{{ marcaSelecionada.id > 0 ? 'Editar Marca' : 'Adicionar Marca' }}</h5>
-    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
+  <div class="modal-header bg-primary">
+    <h5 class="modal-title fw-bold">
+      {{ marcaSelecionada.id > 0 ? "Editar Marca" : "Nova Marca" }}
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Fechar"
+      (click)="cancelarModal()"
+    ></button>
   </div>
-  <div class="modal-body">
-    <mdb-form-control>
-      <input mdbInput placeholder="Nome" [(ngModel)]="marcaSelecionada.nome" />
-    </mdb-form-control>
 
-    <div class="d-flex justify-content-end mt-3 gap-2">
-      <button class="btn btn-primary" (click)="salvarMarca(marcaSelecionada)">Salvar</button>
-      <button class="btn btn-secondary" (click)="cancelarModal()">Cancelar</button>
-    </div>
+  <div class="modal-body d-flex justify-content-center">
+    <form #marcaForm="ngForm" (ngSubmit)="salvarMarca(marcaSelecionada)">
+      <!-- Label e Input lado a lado -->
+      <div class="d-flex align-items-center mb-3">
+        <label class="me-2 fw-bold" style="width: 100px">Nome:</label>
+        <input
+          mdbInput
+          type="text"
+          id="nome"
+          name="nome"
+          [(ngModel)]="marcaSelecionada.nome"
+          #nome="ngModel"
+          required
+          placeholder=" Nome "
+          class="form-control flex-grow-1"
+        />
+      </div>
+
+      <!-- Mensagem de erro -->
+      <div
+        *ngIf="nome.invalid && (nome.dirty || nome.touched)"
+        class="text-danger text-center"
+      >
+        O campo <strong>Nome</strong> é obrigatório.
+      </div>
+    </form>
+  </div>
+
+  <!-- Botões centralizados -->
+  <div class="modal-footer d-flex justify-content-center bg-dark">
+    <button
+      class="btn btn-primary me-2"
+      [disabled]="marcaForm.invalid"
+      (click)="salvarMarca(marcaSelecionada)"
+    >
+      Salvar
+    </button>
+    <button class="btn btn-secondary" (click)="cancelarModal()">
+      Cancelar
+    </button>
   </div>
 </ng-template>
-
-

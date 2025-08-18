@@ -21,7 +21,7 @@ export class CarroService {
   }
 
   excluir(id:number): Observable<string> {
-    return this.http.delete<string>(this.API + '/delete/' + id, {responseType: 'text' as 'json'});
+    return this.http.delete<string>(this.API + "/"+id, {responseType: 'text' as 'json'});
   }
  
   cadastrar(carro: CarroCreateDTO): Observable<any> {

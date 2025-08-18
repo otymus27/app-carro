@@ -35,7 +35,7 @@ export class CarroComponent {
   carroSelecionado!: Carro;
 
   marcas: Marca[] = [];              // ✅ lista para select
-  proprietarios: Proprietario[] = []; // ✅ lista para multi-select
+  proprietariosDisponiveis: Proprietario[] = []; // lista geral
 
   carroService = inject(CarroService);
   marcaService = inject(MarcaService);
@@ -46,7 +46,24 @@ export class CarroComponent {
   @ViewChild('modalCarroDetalhe') modalCarroDetalhe!: TemplateRef<any>;
   modalRef!: MdbModalRef<any>;
 
-constructor() {
+
+
+  //Modal de proprietarios que ira abrir dentro do modal de carro
+  @ViewChild('modalProprietarios') modalProprietarios!: TemplateRef<any>;
+  modalRefProprietarios!: MdbModalRef<any>;
+
+  abrirModalProprietarios() {
+    this.modalRefProprietarios = this.modalService.open(this.modalProprietarios);
+  }
+
+  fecharModalProprietarios() {
+    this.modalRefProprietarios.close();
+  }
+
+  
+
+
+  constructor() {
     this.listar();
     this.carregarMarcas();
     this.carregarProprietarios();
@@ -74,7 +91,7 @@ constructor() {
 
   carregarProprietarios() {
     this.proprietarioService.listar().subscribe({
-      next: lista => this.proprietarios = lista,
+      next: lista => this.proprietariosDisponiveis = lista,
       error: () => alert('Erro ao listar proprietários!')
     });
   }
@@ -90,7 +107,7 @@ constructor() {
 
     // Seleciona os proprietários corretos da lista por referência
     const proprietariosSelecionados = carro.proprietarios.map(p => {
-      return this.proprietarios.find(pr => pr.id === p.id)!;
+      return this.proprietariosDisponiveis.find(pr => pr.id === p.id)!;
     });
 
     // Atualiza o carroSelecionado com referências corretas
@@ -112,7 +129,23 @@ constructor() {
     this.modalRef.close();
   }
 
-  salvarCarro(carro: Carro, form: any) {
+
+  // ====== Carrinho de Proprietários ======
+  adicionarProprietario(proprietario: Proprietario) {
+    if (!this.carroSelecionado.proprietarios.find(p => p.id === proprietario.id)) {
+      this.carroSelecionado.proprietarios.push(proprietario); 
+      this.modalRefProprietarios.close();     
+    }
+  }
+
+  removerProprietario(proprietario: Proprietario) {
+    this.carroSelecionado.proprietarios = 
+      this.carroSelecionado.proprietarios.filter(p => p.id !== proprietario.id);
+  }
+  // =======================================
+
+
+  salvarCarro(carro: Carro) {
     if (!carro.modelo?.trim() || !carro.cor?.trim() || !carro.ano || !carro.marca?.id) {
       return;
     }

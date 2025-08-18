@@ -1,8 +1,12 @@
+<br>
+
 <div class="container">
   <div class="card">
     <div class="card-body">
       <h1>Listagem de Proprietários</h1>
-      <button class="btn btn-primary" (click)="cadastrarModal()">Novo Proprietário</button>
+      <button class="btn btn-primary" (click)="cadastrarModal()">
+        Novo Proprietário
+      </button>
 
       <table class="table table-striped mt-3">
         <thead>
@@ -14,83 +18,131 @@
           </tr>
         </thead>
         <tbody>
-           @for (proprietario of lista; track proprietario.id) {
-          <tr >       
+          @for (proprietario of lista; track proprietario.id) {
+          <tr>
             <td>{{ proprietario.nome }}</td>
             <td>{{ proprietario.cpf | cpfMask }}</td>
             <td>{{ proprietario.telefone | telefoneMask }}</td>
             <td>
-              <button class="btn btn-primary btn-sm" (click)="editarModal(proprietario)">Editar</button>
-              <button class="btn btn-danger btn-sm" (click)="excluir(proprietario)">Excluir</button>
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="editarModal(proprietario)"
+              >
+                Editar
+              </button>
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="excluir(proprietario)"
+              >
+                Excluir
+              </button>
             </td>
           </tr>
-        }
+          }
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
+<!-- Aqui montamos e configuramos o modal -->
 <ng-template #modalProprietarioDetalhe>
-  <div class="modal-header">
-    <h5 class="modal-title">
-      {{ proprietarioSelecionado.id > 0 ? 'Editar Proprietário' : 'Novo Proprietário' }}
+  <div class="modal-header bg-primary">
+    <h5 class="modal-title fw-bold">
+      {{
+        proprietarioSelecionado.id > 0
+          ? "Editar Proprietário"
+          : "Novo Proprietário"
+      }}
     </h5>
     <button type="button" class="btn-close" (click)="cancelarModal()"></button>
   </div>
 
-  <div class="modal-body">
-    <form #form="ngForm" (ngSubmit)="salvarProprietario(proprietarioSelecionado, form)">
-      
-      <!-- Nome -->
-      <mdb-form-control>
+  <div class="modal-body d-flex justify-content-center">
+    <form
+      #marcaForm="ngForm"
+      (ngSubmit)="salvarProprietario(proprietarioSelecionado)"
+    >
+      <!-- Label e Input lado a lado -->
+      <div class="d-flex align-items-center mb-3">
+        <!-- Nome -->
+        <label class="me-2 fw-bold" style="width: 100px">Nome:</label>
         <input
           mdbInput
-          placeholder="Nome"
           [(ngModel)]="proprietarioSelecionado.nome"
+          #nome="ngModel"
           name="nome"
           required
+          class="form-control flex-grow-1"
         />
-      </mdb-form-control>
-      <div *ngIf="form.submitted && !proprietarioSelecionado.nome?.trim()" class="text-danger mt-1">
-        Nome é obrigatório
       </div>
 
-      <!-- CPF -->
-      <mdb-form-control class="mt-2">
+      <!-- Mensagem de erro -->
+      <div
+        *ngIf="nome.invalid && (nome.dirty || nome.touched)"
+        class="text-danger text-center"
+      >
+        O campo <strong>Nome</strong> é obrigatório.
+      </div>
+
+      <!-- Label e Input lado a lado -->
+      <div class="d-flex align-items-center mb-3">
+        <!-- CPF -->
+        <label class="me-2 fw-bold" style="width: 100px">CPF:</label>
         <input
           mdbInput
-          placeholder="CPF"
           [(ngModel)]="proprietarioSelecionado.cpf"
+          #cpf="ngModel"
           name="cpf"
           mask="000.000.000-00"
           required
+          class="form-control flex-grow-1"
         />
-      </mdb-form-control>
-      <div *ngIf="form.submitted && !proprietarioSelecionado.cpf?.trim()" class="text-danger mt-1">
-        CPF é obrigatório
+      </div>
+      <!-- Mensagem de erro -->
+      <div
+        *ngIf="cpf.invalid && (cpf.dirty || cpf.touched)"
+        class="text-danger text-center"
+      >
+        O campo é obrigatório.
       </div>
 
-      <!-- Telefone -->
-      <mdb-form-control class="mt-2">
+      <!-- Label e Input lado a lado -->
+      <div class="d-flex align-items-center mb-3">
+        <!-- CPF -->
+        <label class="me-2 fw-bold" style="width: 100px">Telefone:</label>
         <input
           mdbInput
-          placeholder="Telefone"
           [(ngModel)]="proprietarioSelecionado.telefone"
+          #telefone="ngModel"
           name="telefone"
           mask="(00) 00000-0000"
           required
+          class="form-control flex-grow-1"
         />
-      </mdb-form-control>
-      <div *ngIf="form.submitted && !proprietarioSelecionado.telefone?.trim()" class="text-danger mt-1">
-        Telefone é obrigatório
       </div>
 
-      <!-- Botões -->
-      <div class="d-flex justify-content-end mt-3 gap-2">
-        <button type="submit" class="btn btn-primary" (click)="proprietarioSelecionado">Salvar</button>
-        <button type="button" class="btn btn-secondary" (click)="cancelarModal()">Cancelar</button>        
+      <!-- Mensagem de erro -->
+      <div
+        *ngIf="telefone.invalid && (telefone.dirty || telefone.touched)"
+        class="text-danger text-center"
+      >
+        O campo é obrigatório.
       </div>
     </form>
+  </div>
+
+  <!-- Botões centralizados -->
+  <div class="modal-footer d-flex justify-content-center bg-dark">
+    <button
+      class="btn btn-primary me-2"
+      [disabled]="marcaForm.invalid"
+      (click)="salvarProprietario(proprietarioSelecionado)"
+    >
+      Salvar
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="cancelarModal()">
+      Cancelar
+    </button>
   </div>
 </ng-template>
