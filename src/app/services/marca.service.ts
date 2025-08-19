@@ -18,11 +18,31 @@ export class MarcaService {
 
   constructor() {}
 
+  // Listar marcas com paginação
+  // listar(page: number = 0, size: number = 5): Observable<Paginacao<Marca>> {
+  //   return this.http.get<Paginacao<Marca>>(`${this.API + '/paginado/'}?page=${page}&size=${size}`);
+  // }
 
   // Listar marcas com paginação
-  listar(page: number = 0, size: number = 5): Observable<Paginacao<Marca>> {
-    return this.http.get<Paginacao<Marca>>(`${this.API + '/paginado/'}?page=${page}&size=${size}`);
+listar(
+  page: number = 0,
+  size: number = 5,
+  sortField: keyof Marca = 'id',
+  sortDirection: 'asc' | 'desc' = 'asc',
+  nome?: string
+): Observable<Paginacao<Marca>> {
+  let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString())
+    .set('sortField', sortField)      // envia o campo para ordenar
+    .set('sortDir', sortDirection);   // envia a direção de ordenação
+
+  if (nome) {
+    params = params.set('nome', nome);
   }
+
+  return this.http.get<Paginacao<Marca>>(this.API, { params });
+}
 
   excluir(id: number): Observable<string> {
     return this.http.delete<string>(this.API + '/' + id, {
