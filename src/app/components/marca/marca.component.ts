@@ -28,6 +28,21 @@ export class MarcaComponent {
   page = 0;
   size = 5;
   totalPages = 0;
+  totalElements = 0;
+
+  irParaPagina(p: number) {
+    this.page = p;
+    this.listar(); // ou o método que carrega os dados
+  }
+
+  // Filtro de pesquisa por nome  
+  filtroNome: string = '';
+  get listaFiltrada(): Marca[] {
+    if (!this.filtroNome) return this.lista;
+    return this.lista.filter(m =>
+      m.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
+    );
+  }
 
   marcaSelecionada: Marca = { id: 0, nome: '' };
 
@@ -40,11 +55,30 @@ export class MarcaComponent {
     this.listar();
   }
 
-  listar() {
-    this.marcaService.listar().subscribe({
-      next: (lista) => (this.lista = lista),
+ listar() {
+    this.marcaService.listar(this.page, this.size).subscribe({
+      next: (resposta) => {
+        this.lista = resposta.content;
+        this.totalPages = resposta.totalPages;
+        this.totalElements = resposta.totalElements; // pega a quantidade total
+        this.page = resposta.number;
+      },
       error: () => alert('Erro ao listar marcas!'),
     });
+  }
+
+  proximaPagina() {
+    if (this.page < this.totalPages - 1) {
+      this.page++;
+      this.listar();
+    }
+  }
+
+  paginaAnterior() {
+    if (this.page > 0) {
+      this.page--;
+      this.listar();
+    }
   }
 
   CadastrarModal() {

@@ -12,6 +12,7 @@ import { Proprietario } from '../../models/proprietario';
 import { MarcaService } from '../../services/marca.service';
 import { ProprietarioService } from '../../services/proprietario.service';
 import { CarroCreateDTO } from '../../models/carro-create-dto';
+import { Paginacao } from '../../models/paginacao';
 
 
 @Component({
@@ -36,6 +37,13 @@ export class CarroComponent {
 
   marcas: Marca[] = [];              // ✅ lista para select
   proprietariosDisponiveis: Proprietario[] = []; // lista geral
+
+  // ===== Paginação =====
+  page = 0;
+  size = 5;
+  totalPages = 0;
+  totalElements = 0;
+
 
   carroService = inject(CarroService);
   marcaService = inject(MarcaService);
@@ -83,9 +91,14 @@ export class CarroComponent {
   }
 
   carregarMarcas() {
-    this.marcaService.listar().subscribe({
-      next: lista => this.marcas = lista,
-      error: () => alert('Erro ao listar marcas!')
+        this.marcaService.listar(this.page).subscribe({
+      next: (lista: Paginacao<Marca>) => {
+        this.marcas = lista.content;   // <- aqui pegamos o array real
+        this.totalPages = lista.totalPages;
+        this.totalElements = lista.totalElements; // pega a quantidade total
+        this.page = lista.number;
+      },
+      error: err => console.error(err)
     });
   }
 

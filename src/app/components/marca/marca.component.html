@@ -1,9 +1,22 @@
 <br />
-<div class="container">
+<div class="container-xl">
   <div class="card">
     <div class="card-body">
-      <h1>Listagem de Marcas</h1>
-      <button class="btn btn-primary" (click)="CadastrarModal()">Novo</button>
+
+      <div class="d-flex justify-content-between align-items-center bg-dark text-white p-3">
+          <h1 class="mb-0">Gerenciamento de Marcas</h1>         
+          <button class="btn btn-primary btn-rounded btn-shadow me-2" (click)="CadastrarModal()"><i class="bi bi-plus-circle me-1"></i> Novo</button>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <input
+          type="text"
+          class="form-control w-50"
+          placeholder="Pesquisar por nome..."
+          [(ngModel)]="filtroNome"
+        />        
+      </div>
+     
 
       <table class="table table-striped mt-3">
         <thead>
@@ -13,24 +26,81 @@
           </tr>
         </thead>
         <tbody>
-          @for (marca of lista; track marca.id) {
+          @for (marca of listaFiltrada; track marca.id) {
           <tr>
             <td>{{ marca.nome }}</td>
             <td>
+              <!-- Botão Editar -->
               <button
-                class="btn btn-primary btn-sm"
+                class="btn btn-warning btn-sm btn-shadow me-1"
                 (click)="editarModal(marca)"
+                title="Editar"
               >
-                Editar
+                <i class="bi bi-pencil-square"></i>
               </button>
-              <button class="btn btn-danger btn-sm" (click)="excluir(marca)">
-                Excluir
+
+              <!-- Botão Excluir -->
+              <button
+                class="btn btn-danger btn-sm btn-shadow"
+                (click)="excluir(marca)"
+                title="Excluir"
+              >
+                <i class="bi bi-trash"></i>
               </button>
             </td>
           </tr>
           }
         </tbody>
       </table>
+
+      <!-- Paginação estilizada com contador na mesma linha -->
+      <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap bg-ligth text-white p-3">
+
+        <!-- Contador -->
+        <div class="text-muted me-3">
+          <small>
+            Exibindo página <strong>{{ page + 1 }}</strong> de <strong>{{ totalPages }}</strong> 
+            — Total de registros: <strong>{{ totalElements }}</strong>
+          </small>
+        </div>
+
+        <!-- Navegação -->
+        <nav>
+          <ul class="pagination mb-0">
+            <!-- Botão Anterior -->
+            <li class="page-item" [class.disabled]="page === 0">
+              <button class="page-link" (click)="paginaAnterior()" [disabled]="page === 0">
+                ‹ Anterior
+              </button>
+            </li>
+
+            <!-- Páginas -->
+            <li 
+              *ngFor="let p of [].constructor(totalPages); let i = index" 
+              class="page-item" 
+              [class.active]="i === page"
+            >
+              <button class="page-link" (click)="irParaPagina(i)">
+                {{ i + 1 }}
+              </button>
+            </li>
+
+            <!-- Botão Próximo -->
+            <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+              <button class="page-link" (click)="proximaPagina()" [disabled]="page + 1 >= totalPages">
+                Próxima ›
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+      </div>
+
+
+
+
+      
+
     </div>
   </div>
 </div>

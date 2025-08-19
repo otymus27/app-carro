@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Marca } from '../models/marca';
+import { Paginacao } from '../models/paginacao';
 
 export interface ResponseMsg {
   mensagem: string;
@@ -17,14 +18,10 @@ export class MarcaService {
 
   constructor() {}
 
-  listar(): Observable<Marca[]> {
-    return this.http.get<Marca[]>(this.API);
-  }
 
-  listarPaginado(page: number, size: number): Observable<any> {
-    let params = new HttpParams().set('page', page).set('size', size);
-
-    return this.http.get<any>(this.API, { params });
+  // Listar marcas com paginação
+  listar(page: number = 0, size: number = 5): Observable<Paginacao<Marca>> {
+    return this.http.get<Paginacao<Marca>>(`${this.API + '/paginado/'}?page=${page}&size=${size}`);
   }
 
   excluir(id: number): Observable<string> {
