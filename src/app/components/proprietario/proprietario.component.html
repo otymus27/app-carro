@@ -1,148 +1,122 @@
-<br>
-
-<div class="container">
+<div class="container-xl">
   <div class="card">
     <div class="card-body">
-      <h1>Listagem de Proprietários</h1>
-      <button class="btn btn-primary" (click)="cadastrarModal()">
-        Novo Proprietário
-      </button>
+      <div
+        class="d-flex justify-content-between align-items-center bg-dark text-white p-3"
+      >
+        <h1>Listagem de Proprietários</h1>
+        <button mat-flat-button color="primary" (click)="cadastrarModal()">
+          <mat-icon>add_circle_outline</mat-icon> Novo
+        </button>
+      </div>
 
-      <table class="table table-striped mt-3">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>Telefone</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (proprietario of lista; track proprietario.id) {
-          <tr>
-            <td>{{ proprietario.nome }}</td>
-            <td>{{ proprietario.cpf | cpfMask }}</td>
-            <td>{{ proprietario.telefone | telefoneMask }}</td>
-            <td>
-              <button
-                class="btn btn-primary btn-sm"
-                (click)="editarModal(proprietario)"
-              >
-                Editar
-              </button>
-              <button
-                class="btn btn-danger btn-sm"
-                (click)="excluir(proprietario)"
-              >
-                Excluir
-              </button>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
+      <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+        <mat-form-field appearance="fill" class="me-2 w-50">
+          <mat-label>Pesquisar por nome ou CPF</mat-label>
+          <input
+            matInput
+            type="text"
+            [(ngModel)]="filtro"
+            (keyup.enter)="aplicarFiltro()"
+          />
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" class="ms-2" (click)="aplicarFiltro()">
+          <mat-icon>search</mat-icon> Pesquisar
+        </button>
+      </div>
+
+      <mat-table [dataSource]="lista" class="mat-elevation-z8">
+        <ng-container matColumnDef="nome">
+          <tr mat-header-row *matHeaderRowDef="['nome', 'cpf', 'telefone', 'acao']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['nome', 'cpf', 'telefone', 'acao']"></tr>
+        </ng-container>
+
+        <ng-container matColumnDef="cpf">
+          <th mat-header-cell *matHeaderCellDef (click)="ordenarPor('cpf')">CPF</th>
+          <td mat-cell *matCellDef="let proprietario">{{ proprietario.cpf | cpfMask }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="telefone">
+          <th mat-header-cell *matHeaderCellDef>Telefone</th>
+          <td mat-cell *matCellDef="let proprietario">{{ proprietario.telefone | telefoneMask }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acao">
+          <th mat-header-cell *matHeaderCellDef>Ação</th>
+          <td mat-cell *matCellDef="let proprietario">
+            <button mat-icon-button color="accent" (click)="editarModal(proprietario)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="excluir(proprietario)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['nome', 'cpf', 'telefone', 'acao']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['nome', 'cpf', 'telefone', 'acao']"></tr>
+      </mat-table>
+
+      <div class="mt-4">
+        <mat-paginator
+          [length]="totalElements"
+          [pageSize]="size"
+          [pageIndex]="page"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          (page)="handlePageEvent($event)"
+          aria-label="Select page of owners"
+        >
+        </mat-paginator>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Aqui montamos e configuramos o modal -->
 <ng-template #modalProprietarioDetalhe>
-  <div class="modal-header bg-primary">
-    <h5 class="modal-title fw-bold">
-      {{
-        proprietarioSelecionado.id > 0
-          ? "Editar Proprietário"
-          : "Novo Proprietário"
-      }}
-    </h5>
-    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
-  </div>
+  <h2 mat-dialog-title class="mat-dialog-title-primary">
+    {{ proprietarioSelecionado.id > 0 ? 'Editar Proprietário' : 'Novo Proprietário' }}
+  </h2>
+  <mat-dialog-content>
+    <form #form="ngForm">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Nome</mat-label>
+        <input matInput [(ngModel)]="proprietarioSelecionado.nome" name="nome" required>
+        <mat-error *ngIf="form.controls['nome']?.invalid && form.controls['nome']?.touched">
+          O campo Nome é obrigatório.
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>CPF</mat-label>
+        <input matInput [(ngModel)]="proprietarioSelecionado.cpf" name="cpf" mask="000.000.000-00" required>
+        <mat-error *ngIf="form.controls['cpf']?.invalid && form.controls['cpf']?.touched">
+          O campo CPF é obrigatório.
+        </mat-error>
+      </mat-form-field>
 
-  <div class="modal-body d-flex justify-content-center">
-    <form
-      #marcaForm="ngForm"
-      (ngSubmit)="salvarProprietario(proprietarioSelecionado)"
-    >
-      <!-- Label e Input lado a lado -->
-      <div class="d-flex align-items-center mb-3">
-        <!-- Nome -->
-        <label class="me-2 fw-bold" style="width: 100px">Nome:</label>
-        <input
-          mdbInput
-          [(ngModel)]="proprietarioSelecionado.nome"
-          #nome="ngModel"
-          name="nome"
-          required
-          class="form-control flex-grow-1"
-        />
-      </div>
-
-      <!-- Mensagem de erro -->
-      <div
-        *ngIf="nome.invalid && (nome.dirty || nome.touched)"
-        class="text-danger text-center"
-      >
-        O campo <strong>Nome</strong> é obrigatório.
-      </div>
-
-      <!-- Label e Input lado a lado -->
-      <div class="d-flex align-items-center mb-3">
-        <!-- CPF -->
-        <label class="me-2 fw-bold" style="width: 100px">CPF:</label>
-        <input
-          mdbInput
-          [(ngModel)]="proprietarioSelecionado.cpf"
-          #cpf="ngModel"
-          name="cpf"
-          mask="000.000.000-00"
-          required
-          class="form-control flex-grow-1"
-        />
-      </div>
-      <!-- Mensagem de erro -->
-      <div
-        *ngIf="cpf.invalid && (cpf.dirty || cpf.touched)"
-        class="text-danger text-center"
-      >
-        O campo é obrigatório.
-      </div>
-
-      <!-- Label e Input lado a lado -->
-      <div class="d-flex align-items-center mb-3">
-        <!-- CPF -->
-        <label class="me-2 fw-bold" style="width: 100px">Telefone:</label>
-        <input
-          mdbInput
-          [(ngModel)]="proprietarioSelecionado.telefone"
-          #telefone="ngModel"
-          name="telefone"
-          mask="(00) 00000-0000"
-          required
-          class="form-control flex-grow-1"
-        />
-      </div>
-
-      <!-- Mensagem de erro -->
-      <div
-        *ngIf="telefone.invalid && (telefone.dirty || telefone.touched)"
-        class="text-danger text-center"
-      >
-        O campo é obrigatório.
-      </div>
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Telefone</mat-label>
+        <input matInput [(ngModel)]="proprietarioSelecionado.telefone" name="telefone" mask="(00) 00000-0000" required>
+        <mat-error *ngIf="form.controls['telefone']?.invalid && form.controls['telefone']?.touched">
+          O campo Telefone é obrigatório.
+        </mat-error>
+      </mat-form-field>
     </form>
-  </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancelarModal()">Cancelar</button>
+    <button mat-button color="primary" [disabled]="form.invalid" (click)="salvarProprietario(proprietarioSelecionado)">Salvar</button>
+  </mat-dialog-actions>
+</ng-template>
 
-  <!-- Botões centralizados -->
-  <div class="modal-footer d-flex justify-content-center bg-dark">
-    <button
-      class="btn btn-primary me-2"
-      [disabled]="marcaForm.invalid"
-      (click)="salvarProprietario(proprietarioSelecionado)"
-    >
-      Salvar
-    </button>
-    <button type="button" class="btn btn-secondary" (click)="cancelarModal()">
-      Cancelar
-    </button>
-  </div>
+<ng-template #modalConfirmacaoExclusao>
+  <h2 mat-dialog-title class="mat-dialog-title-danger">Confirmação de Exclusão</h2>
+  <mat-dialog-content>
+    <p>Tem certeza que deseja excluir o proprietário <strong>{{ proprietarioSelecionado?.nome }}</strong>?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="mat-dialog-actions">
+    <button mat-button (click)="dialogRef.close(false)">Cancelar</button>
+    <button mat-button color="warn" (click)="dialogRef.close(true)">Excluir</button>
+  </mat-dialog-actions>
 </ng-template>

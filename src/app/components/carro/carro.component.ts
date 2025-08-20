@@ -91,7 +91,7 @@ export class CarroComponent {
   }
 
   carregarMarcas() {
-        this.marcaService.listar(this.page).subscribe({
+    this.marcaService.listar(this.page).subscribe({
       next: (lista: Paginacao<Marca>) => {
         this.marcas = lista.content;   // <- aqui pegamos o array real
         this.totalPages = lista.totalPages;
@@ -103,9 +103,14 @@ export class CarroComponent {
   }
 
   carregarProprietarios() {
-    this.proprietarioService.listar().subscribe({
-      next: lista => this.proprietariosDisponiveis = lista,
-      error: () => alert('Erro ao listar proprietários!')
+    this.proprietarioService.listar(this.page).subscribe({
+      next: (lista: Paginacao<Proprietario>) => {
+        this.proprietariosDisponiveis = lista.content;   // <- aqui pegamos o array real
+        this.totalPages = lista.totalPages;
+        this.totalElements = lista.totalElements; // pega a quantidade total
+        this.page = lista.number;
+      },
+      error: err => console.error(err)
     });
   }
 

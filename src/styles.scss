@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@import '@fortawesome/fontawesome-free/css/all.css';
-@import 'mdb-angular-ui-kit/assets/scss/mdb.scss';
+@import "@fortawesome/fontawesome-free/css/all.css";
+@import "mdb-angular-ui-kit/assets/scss/mdb.scss";
+@import 'bootstrap-icons/font/bootstrap-icons.css';
 
 .centralizar {
   text-align: center;
@@ -10,6 +11,9 @@
   text-align: right;
 }
 
-body{
+body {
   background-color: lightgray;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

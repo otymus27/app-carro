@@ -133,7 +133,7 @@
   </div>
 
   <div class="modal-body d-flex justify-content-center">
-    <form #marcaForm="ngForm" (ngSubmit)="salvarMarca(marcaSelecionada)">
+    <form #form="ngForm" (ngSubmit)="salvarMarca(marcaSelecionada)">
       <!-- Label e Input lado a lado -->
       <div class="d-flex align-items-center mb-3">
         <label class="me-2 fw-bold" style="width: 100px">Nome:</label>
@@ -164,7 +164,7 @@
   <div class="modal-footer d-flex justify-content-center bg-dark">
     <button
       class="btn btn-primary me-2"
-      [disabled]="marcaForm.invalid"
+      [disabled]="form.invalid"
       (click)="salvarMarca(marcaSelecionada)"
     >
       Salvar
