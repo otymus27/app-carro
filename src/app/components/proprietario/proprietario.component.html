@@ -1,9 +1,8 @@
 <div class="container-xl">
   <div class="card">
     <div class="card-body">
-      <div
-        class="d-flex justify-content-between align-items-center bg-dark text-white p-3"
-      >
+
+      <div class="d-flex justify-content-between align-items-center bg-dark text-white p-3">
         <h1>Listagem de Proprietários</h1>
         <button mat-flat-button color="primary" (click)="cadastrarModal()">
           <mat-icon>add_circle_outline</mat-icon> Novo
@@ -20,16 +19,15 @@
             (keyup.enter)="aplicarFiltro()"
           />
         </mat-form-field>
-
-        <button mat-raised-button color="primary" class="ms-2" (click)="aplicarFiltro()">
+        <button mat-raised-button color="danger" class="ms-2" (click)="aplicarFiltro()">
           <mat-icon>search</mat-icon> Pesquisar
         </button>
       </div>
 
       <mat-table [dataSource]="lista" class="mat-elevation-z8">
         <ng-container matColumnDef="nome">
-          <tr mat-header-row *matHeaderRowDef="['nome', 'cpf', 'telefone', 'acao']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['nome', 'cpf', 'telefone', 'acao']"></tr>
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let proprietario">{{ proprietario.nome }}</td>
         </ng-container>
 
         <ng-container matColumnDef="cpf">
@@ -45,7 +43,7 @@
         <ng-container matColumnDef="acao">
           <th mat-header-cell *matHeaderCellDef>Ação</th>
           <td mat-cell *matCellDef="let proprietario">
-            <button mat-icon-button color="accent" (click)="editarModal(proprietario)">
+            <button mat-icon-button color="primary" (click)="editarModal(proprietario)">
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button color="warn" (click)="excluir(proprietario)">
@@ -66,8 +64,7 @@
           [pageSizeOptions]="[5, 10, 25, 100]"
           (page)="handlePageEvent($event)"
           aria-label="Select page of owners"
-        >
-        </mat-paginator>
+        ></mat-paginator>
       </div>
     </div>
   </div>

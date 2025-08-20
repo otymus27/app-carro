@@ -50,3 +50,25 @@ table {
   background-color: #f44336; // Vermelho de perigo
   color: #fff;
 }
+
+/* Cores para o título do modal de cadastro/edição */
+.mat-dialog-title-primary {
+  background-color: #6D28D9; /* Um roxo vibrante */
+  color: white;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  border-top-left-radius: 8px; /* Cantos mais arredondados */
+  border-top-right-radius: 8px;
+  font-weight: bold;
+}
+
+/* Cores para o título do modal de exclusão */
+.mat-dialog-title-danger {
+  background-color: #EF4444; /* Um vermelho vibrante */
+  color: white;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  font-weight: bold;
+}

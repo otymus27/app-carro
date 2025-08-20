@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; // Necessário para ngModel e validação de template-driven forms
 
 // ✅ Imports do Angular Material
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button'; // Adicionado
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input'; // Explicitamente adicionado para clareza
 import { MatTableModule } from '@angular/material/table';
 import {
   MatPaginator,
-  MatPaginatorModule,
+  MatPaginatorModule, // ✅ CORRIGIDO: Deve ser MatPaginatorModule
   PageEvent,
 } from '@angular/material/paginator';
 import {
@@ -34,35 +34,30 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     FormsModule,
     MatIconModule,
     MatFormFieldModule,
+    MatInputModule, // ✅ Adicionado explicitamente
     MatTableModule,
-    MatPaginator,
+    MatPaginatorModule, // ✅ CORRIGIDO aqui
     CpfMaskPipe,
     TelefoneMaskPipe,
     NgxMaskDirective,
-    // ✅ Adicione os módulos do Angular Material
+    MatButtonModule, // ✅ Adicionado
     MatDialogModule,
     MatSnackBarModule,
   ],
   providers: [provideNgxMask()],
-  standalone: true, // ✅ Adicionado para ser usado em módulos standalones
+  standalone: true,
   templateUrl: './proprietario.component.html',
   styleUrl: './proprietario.component.scss',
 })
 export class ProprietarioComponent {
-  // ... outras propriedades
+  // ✅ Propriedades da tabela e do modal
   displayedColumns: string[] = ['nome', 'cpf', 'telefone', 'acao'];
-  dialogRef!: MatDialogRef<any>; // ✅ Mantenha a referência do modal
-
-  // ✅ ADICIONE ESTE CÓDIGO AQUI
-private exibirSnackBar(message: string, type: 'success' | 'danger') {
-  this.snackBar.open(message, 'Fechar', {
-    duration: 3000,
-    panelClass: type === 'success' ? ['success-snackbar'] : ['danger-snackbar']
-  });
-}
+  dialogRef!: MatDialogRef<any>; // Mantenha a referência do modal
 
   lista: Proprietario[] = [];
-  proprietarioSelecionado!: Proprietario;
+  // Garanta que proprietarioSelecionado sempre tenha uma estrutura inicial para evitar erros de renderização.
+  // Pode ser um objeto vazio ou um objeto com valores padrão, dependendo da sua lógica.
+  proprietarioSelecionado: Proprietario = { id: 0, nome: '', cpf: '', telefone: '' }; 
 
   // Variáveis para paginação
   page = 0;
@@ -77,13 +72,12 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
   colunaOrdenada: keyof Proprietario = 'nome';
   ordem: 'asc' | 'desc' = 'asc';
 
+  // ✅ Injeção de serviços
   proprietarioService = inject(ProprietarioService);
-
-  // Referências para os templates de modal
-  // ✅ Adicione a injeção do Angular Material
   dialog = inject(MatDialog);
   snackBar = inject(MatSnackBar);
 
+  // Referências para os templates de modal
   @ViewChild('modalProprietarioDetalhe')
   modalProprietarioDetalhe!: TemplateRef<any>;
   @ViewChild('modalConfirmacaoExclusao')
@@ -124,35 +118,44 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
           this.totalPages = resposta.totalPages;
           this.totalElements = resposta.totalElements;
         },
-        error: () => alert('Erro ao listar proprietários!'),
+        error: (err) => { // Use 'err' para capturar o erro completo
+          console.error('Erro ao listar proprietários:', err); // Log para debug
+          this.exibirSnackBar('Erro ao listar proprietários!', 'danger'); // Melhor UX
+        },
       });
   }
 
   // ✅ Lógica de paginação
-  irParaPagina(p: number) {
-    this.page = p;
+  handlePageEvent(e: PageEvent) {
+    this.size = e.pageSize;
+    this.page = e.pageIndex;
     this.listar();
   }
 
-  proximaPagina() {
-    if (this.page < this.totalPages - 1) {
-      this.page++;
-      this.listar();
-    }
-  }
+  // Métodos de paginação desnecessários se MatPaginator for usado corretamente
+  // irParaPagina(p: number) {
+  //   this.page = p;
+  //   this.listar();
+  // }
+  // proximaPagina() {
+  //   if (this.page < this.totalPages - 1) {
+  //     this.page++;
+  //     this.listar();
+  //   }
+  // }
+  // paginaAnterior() {
+  //   if (this.page > 0) {
+  //     this.page--;
+  //     this.listar();
+  //   }
+  // }
 
-  paginaAnterior() {
-    if (this.page > 0) {
-      this.page--;
-      this.listar();
-    }
-  }
-
-  // ✅ Aplica o filtro e limpa o campo
+  // ✅ Aplica o filtro
   aplicarFiltro() {
-    this.page = 0;
+    this.page = 0; // Reinicia a página ao aplicar novo filtro
     this.listar();
-    this.filtro = ''; // Limpa o campo após a busca
+    // Você pode optar por limpar o filtro aqui ou manter o valor no campo de pesquisa
+     this.filtro = ''; 
   }
 
   // ✅ Lógica de ordenação
@@ -172,7 +175,7 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
   }
 
   // ✅ Novo método para exibir o toast (SnackBar)
-  private exibirToast(message: string, type: 'success' | 'danger') {
+  private exibirSnackBar(message: string, type: 'success' | 'danger') {
     this.snackBar.open(message, 'Fechar', {
       duration: 3000,
       panelClass:
@@ -182,7 +185,8 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
 
   // ✅ Modifique os métodos de CRUD para usar o MatDialog e MatSnackBar
   cadastrarModal() {
-    this.proprietarioSelecionado = { id: 0, nome: '', cpf: '', telefone: '' };
+    // Sempre inicialize com um objeto completo para evitar erros de binding
+    this.proprietarioSelecionado = { id: 0, nome: '', cpf: '', telefone: '' }; 
     this.abrirModal(
       this.modalProprietarioDetalhe,
       this.proprietarioSelecionado
@@ -190,7 +194,8 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
   }
 
   editarModal(proprietario: Proprietario) {
-    this.proprietarioSelecionado = { ...proprietario };
+    // Faça uma cópia para evitar modificações diretas no objeto original da lista
+    this.proprietarioSelecionado = { ...proprietario }; 
     this.abrirModal(
       this.modalProprietarioDetalhe,
       this.proprietarioSelecionado
@@ -199,11 +204,13 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
 
   // ✅ Método de salvar
   salvarProprietario(proprietario: Proprietario) {
+    // Validação básica antes de enviar
     if (
       !proprietario.nome?.trim() ||
       !proprietario.cpf?.trim() ||
       !proprietario.telefone?.trim()
     ) {
+      this.exibirSnackBar('Por favor, preencha todos os campos obrigatórios.', 'danger');
       return;
     }
 
@@ -221,25 +228,29 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
       };
       this.proprietarioService.cadastrar(novoRegistro).subscribe({
         next: () => {
-          alert('Registro cadastrado com sucesso!');
+          this.exibirSnackBar('Registro cadastrado com sucesso!', 'success');
           this.listar();
-          this.dialog.closeAll();
+          this.dialog.closeAll(); // Fecha todos os modais abertos
         },
-        error: (err) =>
-          alert(`Erro ${err.status}: ${err.error?.mensagem || err.message}`),
+        error: (err) => {
+          console.error('Erro ao cadastrar proprietário:', err);
+          const mensagemErro = err.error?.mensagem || err.message || 'Erro desconhecido ao cadastrar!';
+          this.exibirSnackBar(`Erro: ${mensagemErro}`, 'danger');
+        },
       });
     } else {
       this.proprietarioService
         .atualizar(proprietario, proprietario.id!)
         .subscribe({
           next: (msg) => {
-            alert(msg || 'Registro atualizado com sucesso!');
+            this.exibirSnackBar(msg || 'Registro atualizado com sucesso!', 'success');
             this.listar();
-            this.dialog.closeAll();
+            this.dialog.closeAll(); // Fecha todos os modais abertos
           },
           error: (err) => {
-            const erroMsg = err?.error || 'Erro desconhecido!';
-            alert(`Erro ${err.status || ''}: ${erroMsg}`);
+            console.error('Erro ao atualizar proprietário:', err);
+            const mensagemErro = err.error?.mensagem || err.message || 'Erro desconhecido ao atualizar!';
+            this.exibirSnackBar(`Erro: ${mensagemErro}`, 'danger');
           },
         });
     }
@@ -266,32 +277,19 @@ private exibirSnackBar(message: string, type: 'success' | 'danger') {
               this.listar();
             },
             error: (error) => {
-              this.exibirSnackBar('Erro ao excluir proprietário!', 'danger');
+              console.error('Erro ao excluir proprietário:', error);
+              const mensagemErro = error.error?.mensagem || error.message || 'Erro desconhecido ao excluir!';
+              this.exibirSnackBar(`Erro: ${mensagemErro}`, 'danger');
             },
           });
       }
     });
   }
 
- 
-
   // ✅ Modifique o método de cancelamento
   cancelarModal() {
-    // Para fechar o modal, chame o método close() da referência do modal
     if (this.dialogRef) {
-      this.dialogRef.close(false); // ✅ Passa 'false' para indicar que não houve confirmação
+      this.dialogRef.close(false); // Passa 'false' para indicar que não houve confirmação
     }
   }
-
-  // ✅ Adicione este método na sua classe ProprietarioComponent
-  handlePageEvent(e: PageEvent) {
-    this.size = e.pageSize;
-    this.page = e.pageIndex;
-    this.listar();
-  }
-
-  // ✅ Modifique o método 'excluirConfirmado()' no HTML
-  // Este método não existe mais no .ts, então vamos ajustar o HTML para fechar o modal com um valor.
-  // Você precisa adicionar o código abaixo no seu HTML, dentro do ng-template #modalConfirmacaoExclusao
-  // <button mat-button color="warn" (click)="dialogRef.close(true)">Excluir</button>
 }

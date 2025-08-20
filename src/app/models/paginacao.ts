@@ -4,5 +4,4 @@ export interface Paginacao<T> {
     totalPages: number;
     size: number;
     number: number;
-    page: number;
 }

@@ -24,18 +24,25 @@ import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 export class MarcaComponent {
   lista: Marca[] = [];
 
-  //Variáveis para configuração para paginação
+  //Configuração para paginação
   page = 0;
   size = 5;
   totalPages = 0;
   totalElements = 0;
 
-  // Filtro
-  filtroNome: string = '';
+  irParaPagina(p: number) {
+    this.page = p;
+    this.listar(); // ou o método que carrega os dados
+  }
 
-  // Ordenação
-  colunaOrdenada: keyof Marca = 'nome';
-  ordem: 'asc' | 'desc' = 'asc';
+  // Filtro de pesquisa por nome  
+  filtroNome: string = '';
+  get listaFiltrada(): Marca[] {
+    if (!this.filtroNome) return this.lista;
+    return this.lista.filter(m =>
+      m.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
+    );
+  }
 
   marcaSelecionada: Marca = { id: 0, nome: '' };
 
@@ -48,29 +55,16 @@ export class MarcaComponent {
     this.listar();
   }
 
-  listar() {
-    this.marcaService
-      .listar(
-        this.page,
-        this.size,
-        this.colunaOrdenada,
-        this.ordem,
-        this.filtroNome
-      )
-      .subscribe({
-        next: (resposta) => {
-          this.lista = resposta.content;
-          this.page = resposta.page; // melhor usar o do backend
-          this.totalPages = resposta.totalPages;
-          this.totalElements = resposta.totalElements;
-        },
-        error: () => alert('Erro ao listar marcas!'),
-      });
-  }
-
-  irParaPagina(p: number) {
-    this.page = p;
-    this.listar();
+ listar() {
+    this.marcaService.listar(this.page, this.size).subscribe({
+      next: (resposta) => {
+        this.lista = resposta.content;
+        this.totalPages = resposta.totalPages;
+        this.totalElements = resposta.totalElements; // pega a quantidade total
+        this.page = resposta.number;
+      },
+      error: () => alert('Erro ao listar marcas!'),
+    });
   }
 
   proximaPagina() {
@@ -85,24 +79,6 @@ export class MarcaComponent {
       this.page--;
       this.listar();
     }
-  }
-
-  // Filtro
-  aplicarFiltro() {
-    this.page = 0; // sempre volta para primeira página
-    this.listar();
-  }
-
-  // Ordenação
-  ordenarPor(campo: keyof Marca) {
-    if (this.colunaOrdenada === campo) {
-      this.ordem = this.ordem === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.colunaOrdenada = campo;
-      this.ordem = 'asc';
-    }
-    // agora passa os parâmetros corretos
-    this.listar();
   }
 
   CadastrarModal() {
