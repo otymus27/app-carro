@@ -9,6 +9,9 @@ import {
   MdbModalService,
 } from 'mdb-angular-ui-kit/modal';
 
+// ✅ Importe o serviço de Toast
+import { ToastService } from '../../services/toast.service';
+
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 import { Proprietario } from '../../models/proprietario';
@@ -50,6 +53,8 @@ export class ProprietarioComponent {
 
   proprietarioService = inject(ProprietarioService);
   modalService = inject(MdbModalService);
+  // ✅ Injete o novo serviço de toast
+  toastService = inject(ToastService); 
 
   @ViewChild('modalProprietarioDetalhe')
   modalProprietarioDetalhe!: TemplateRef<any>;
@@ -87,7 +92,8 @@ export class ProprietarioComponent {
           this.totalPages = resposta.totalPages;
           this.totalElements = resposta.totalElements;
         },
-        error: () => alert('Erro ao listar proprietários!'),
+        // ✅ Use o serviço de toast
+        error: () => this.toastService.showError('Erro ao listar proprietários!'),
       });
   }
 
@@ -165,24 +171,28 @@ export class ProprietarioComponent {
       this.proprietarioService.cadastrar(novoRegistro).subscribe({
         next: () => {
           console.log('Retorno do backend:', novoRegistro);
-          alert('Registro cadastrado com sucesso!');
+          // ✅ Use o serviço de toast
+          this.toastService.showSuccess('Registro cadastrado com sucesso!');
           this.listar();
           this.modalRef.close();
         },
-        error: (err) =>
-          alert(`Erro ${err.status}: ${err.error?.mensagem || err.message}`),
+        error: (err) => {
+          // ✅ Use o serviço de toast
+          this.toastService.showError(`Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`);
+        },
       });
     } else {
       this.proprietarioService.atualizar(proprietario, proprietario.id!).subscribe({
         next: (msg) => {
           console.log('Retorno do backend:', proprietario);
-          alert(msg || 'Registro atualizado com sucesso!');
+          // ✅ Use o serviço de toast
+          this.toastService.showSuccess('Registro atualizado com sucesso!');
           this.listar();
           this.modalRef.close();
         },
         error: (err) => {
-          const erroMsg = err?.error || 'Erro desconhecido!';
-          alert(`Erro ${err.status || ''}: ${erroMsg}`);
+          // ✅ Use o serviço de toast
+          this.toastService.showError(`Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`);
         },
       });
     }
@@ -202,11 +212,13 @@ export class ProprietarioComponent {
     // Em seguida, chama o serviço de exclusão
     this.proprietarioService.excluir(this.proprietarioSelecionado.id!).subscribe({
       next: (mensagem) => {
-        alert(mensagem || 'Registro excluído com sucesso!');
+        // ✅ Use o serviço de toast
+        this.toastService.showSuccess('Registro excluído com sucesso!');
         this.listar();
       },
       error: (error) => {
-        alert('Erro ao excluir proprietário!');
+        // ✅ Use o serviço de toast
+        this.toastService.showError('Erro ao excluir proprietário!');
       },
     });
   }

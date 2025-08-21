@@ -228,3 +228,25 @@
     </button>
   </div>
 </ng-template>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  @for (toast of toastService.messages$ | async; track toast) {
+    <div 
+      class="toast show" 
+      [ngClass]="{
+        'bg-success': toast.type === 'success',
+        'bg-danger': toast.type === 'danger',
+        'bg-info': toast.type === 'info'
+      }" 
+      role="alert" 
+      aria-live="assertive" 
+      aria-atomic="true">
+      <div class="toast-header border-0 bg-transparent text-white">
+        <strong class="me-auto text-capitalize">{{ toast.type }}</strong>
+      </div>
+      <div class="toast-body text-white">
+        {{ toast.message }}
+      </div>
+    </div>
+  }
+</div>
