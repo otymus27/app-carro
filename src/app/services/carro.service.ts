@@ -11,7 +11,7 @@ export class CarroService {
 
   http = inject(HttpClient);
 
-  API = 'http://localhost:8081/api/carro';
+  API = 'http://localhost:8082/api/carro';
  
 
   constructor() { }

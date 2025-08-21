@@ -1,71 +1,148 @@
-<br>
+<br />
 
-<div class="container">
+<div class="container-xl">
   <div class="card">
     <div class="card-body">
-      <h1>Listagem de Proprietários</h1>
-      <button class="btn btn-primary" (click)="cadastrarModal()">
-        Novo Proprietário
-      </button>
+      <!-- Cabeçalho -->
+      <div class="d-flex justify-content-between align-items-center bg-dark text-white p-3">
+        <h1>Listagem de Proprietários</h1>
+        <button class="btn btn-primary btn-rounded btn-shadow me-2" (click)="cadastrarModal()">
+          <i class="bi bi-plus-circle me-1"></i> Novo
+        </button>
+      </div>
 
+      <!-- Barra de pesquisa -->
+      <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+        <input
+          type="text"
+          class="form-control me-2"
+          placeholder="Pesquisar por parte do nome ou cpf"
+          [(ngModel)]="filtro"
+          (keyup.enter)="aplicarFiltro()"
+        />
+
+        <button class="btn btn-primary ms-2" (click)="aplicarFiltro()">
+          <i class="bi bi-search"></i> Pesquisar
+        </button>
+      </div>
+
+      <!-- Tabela -->
       <table class="table table-striped mt-3">
         <thead>
           <tr>
-            <th>Nome</th>
-            <th>CPF</th>
+            <th (click)="ordenarPor('nome')" style="cursor: pointer">
+              Nome
+              <i
+                *ngIf="colunaOrdenada === 'nome'"
+                class="bi"
+                [ngClass]="{
+                  'bi-caret-up-fill': ordem === 'asc',
+                  'bi-caret-down-fill': ordem === 'desc'
+                }"
+              ></i>
+            </th>
+            <th (click)="ordenarPor('cpf')" style="cursor: pointer">
+              CPF
+              <i
+                *ngIf="colunaOrdenada === 'cpf'"
+                class="bi"
+                [ngClass]="{
+                  'bi-caret-up-fill': ordem === 'asc',
+                  'bi-caret-down-fill': ordem === 'desc'
+                }"
+              ></i>
+            </th>
             <th>Telefone</th>
             <th>Ação</th>
           </tr>
         </thead>
         <tbody>
           @for (proprietario of lista; track proprietario.id) {
-          <tr>
-            <td>{{ proprietario.nome }}</td>
-            <td>{{ proprietario.cpf | cpfMask }}</td>
-            <td>{{ proprietario.telefone | telefoneMask }}</td>
-            <td>
-              <button
-                class="btn btn-primary btn-sm"
-                (click)="editarModal(proprietario)"
-              >
-                Editar
-              </button>
-              <button
-                class="btn btn-danger btn-sm"
-                (click)="excluir(proprietario)"
-              >
-                Excluir
-              </button>
-            </td>
-          </tr>
+            <tr>
+              <td>{{ proprietario.nome }}</td>
+              <td>{{ proprietario.cpf | cpfMask }}</td>
+              <td>{{ proprietario.telefone | telefoneMask }}</td>
+              <td>
+                <button
+                  class="btn btn-warning btn-sm btn-shadow me-1"
+                  (click)="editarModal(proprietario)"
+                  title="Editar"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button
+                  class="btn btn-danger btn-sm btn-shadow"
+                  (click)="excluir(proprietario)"
+                  title="Excluir"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
           }
         </tbody>
       </table>
+
+      <!-- Paginação -->
+      <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap bg-light text-white p-3">
+        <div class="text-muted me-3">
+          <small>
+            Exibindo página <strong>{{ page + 1 }}</strong> de
+            <strong>{{ totalPages }}</strong> — Total de registros:
+            <strong>{{ totalElements }}</strong>
+          </small>
+        </div>
+
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item" [class.disabled]="page === 0">
+              <button
+                class="page-link"
+                (click)="paginaAnterior()"
+                [disabled]="page === 0"
+              >
+                ‹ Anterior
+              </button>
+            </li>
+
+            <li
+              *ngFor="let p of [].constructor(totalPages); let i = index"
+              class="page-item"
+              [class.active]="i === page"
+            >
+              <button class="page-link" (click)="irParaPagina(i)">
+                {{ i + 1 }}
+              </button>
+            </li>
+
+            <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+              <button
+                class="page-link"
+                (click)="proximaPagina()"
+                [disabled]="page + 1 >= totalPages"
+              >
+                Próxima ›
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Aqui montamos e configuramos o modal -->
+<!-- Modal Proprietário -->
 <ng-template #modalProprietarioDetalhe>
   <div class="modal-header bg-primary">
     <h5 class="modal-title fw-bold">
-      {{
-        proprietarioSelecionado.id > 0
-          ? "Editar Proprietário"
-          : "Novo Proprietário"
-      }}
+      {{ proprietarioSelecionado.id > 0 ? "Editar Proprietário" : "Novo Proprietário" }}
     </h5>
     <button type="button" class="btn-close" (click)="cancelarModal()"></button>
   </div>
 
   <div class="modal-body d-flex justify-content-center">
-    <form
-      #marcaForm="ngForm"
-      (ngSubmit)="salvarProprietario(proprietarioSelecionado)"
-    >
-      <!-- Label e Input lado a lado -->
+    <form #form="ngForm" (ngSubmit)="salvarProprietario(proprietarioSelecionado)">
       <div class="d-flex align-items-center mb-3">
-        <!-- Nome -->
         <label class="me-2 fw-bold" style="width: 100px">Nome:</label>
         <input
           mdbInput
@@ -76,18 +153,11 @@
           class="form-control flex-grow-1"
         />
       </div>
-
-      <!-- Mensagem de erro -->
-      <div
-        *ngIf="nome.invalid && (nome.dirty || nome.touched)"
-        class="text-danger text-center"
-      >
+      <div *ngIf="nome.invalid && (nome.dirty || nome.touched)" class="text-danger text-center">
         O campo <strong>Nome</strong> é obrigatório.
       </div>
 
-      <!-- Label e Input lado a lado -->
       <div class="d-flex align-items-center mb-3">
-        <!-- CPF -->
         <label class="me-2 fw-bold" style="width: 100px">CPF:</label>
         <input
           mdbInput
@@ -99,17 +169,11 @@
           class="form-control flex-grow-1"
         />
       </div>
-      <!-- Mensagem de erro -->
-      <div
-        *ngIf="cpf.invalid && (cpf.dirty || cpf.touched)"
-        class="text-danger text-center"
-      >
+      <div *ngIf="cpf.invalid && (cpf.dirty || cpf.touched)" class="text-danger text-center">
         O campo é obrigatório.
       </div>
 
-      <!-- Label e Input lado a lado -->
       <div class="d-flex align-items-center mb-3">
-        <!-- CPF -->
         <label class="me-2 fw-bold" style="width: 100px">Telefone:</label>
         <input
           mdbInput
@@ -121,28 +185,46 @@
           class="form-control flex-grow-1"
         />
       </div>
-
-      <!-- Mensagem de erro -->
-      <div
-        *ngIf="telefone.invalid && (telefone.dirty || telefone.touched)"
-        class="text-danger text-center"
-      >
+      <div *ngIf="telefone.invalid && (telefone.dirty || telefone.touched)" class="text-danger text-center">
         O campo é obrigatório.
       </div>
     </form>
   </div>
 
-  <!-- Botões centralizados -->
   <div class="modal-footer d-flex justify-content-center bg-dark">
     <button
       class="btn btn-primary me-2"
-      [disabled]="marcaForm.invalid"
+      [disabled]="form.invalid"
       (click)="salvarProprietario(proprietarioSelecionado)"
     >
       Salvar
     </button>
     <button type="button" class="btn btn-secondary" (click)="cancelarModal()">
       Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal Confirmação Exclusão -->
+<ng-template #modalConfirmacaoExclusao>
+  <div class="modal-header bg-danger text-white">
+    <h5 class="modal-title fw-bold">Confirmação de Exclusão</h5>
+    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
+  </div>
+
+  <div class="modal-body">
+    <p>
+      Tem certeza que deseja excluir o proprietário
+      <strong>{{ proprietarioSelecionado?.nome }}</strong>?
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="cancelarModal()">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="excluirConfirmado()">
+      Excluir
     </button>
   </div>
 </ng-template>

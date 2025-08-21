@@ -102,12 +102,19 @@ export class CarroComponent {
     });
   }
 
+  /**
+   * Carrega a lista de proprietários.
+   */
   carregarProprietarios() {
-    this.proprietarioService.listar().subscribe({
-      next: lista => this.proprietariosDisponiveis = lista,
-      error: () => alert('Erro ao listar proprietários!')
-    });
-  }
+  // Ajuste aqui para pegar o objeto de paginação
+  this.proprietarioService.listar().subscribe({
+    next: (paginacao: Paginacao<Proprietario>) => {
+      // Extraia a lista de proprietários do campo 'content'
+      this.proprietariosDisponiveis = paginacao.content;
+    },
+    error: () => alert('Erro ao listar proprietários!')
+  });
+}
 
   cadastrarModal() {
     this.carroSelecionado = { id: 0, modelo: '', cor: '', ano: 0, marca: { id: 0, nome:'' }, proprietarios: [] };

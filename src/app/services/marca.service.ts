@@ -14,7 +14,7 @@ export interface ResponseMsg {
 export class MarcaService {
   http = inject(HttpClient);
 
-  API = 'http://localhost:8081/api/marca';
+  API = 'http://localhost:8082/api/marca';
 
   constructor() {}
 
