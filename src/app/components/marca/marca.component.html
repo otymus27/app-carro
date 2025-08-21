@@ -14,15 +14,19 @@
         </button>
       </div>
 
+      <!-- Barra de pesquisa -->
       <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
         <input
           type="text"
-          class="form-control w-50"
-          placeholder="Pesquisar por nome..."
-          [(ngModel)]="filtroNome"
-          (ngModelChange)="aplicarFiltro()"
-          class="w-100"
+          class="form-control me-2"
+          placeholder="Pesquisar por parte do nome"
+          [(ngModel)]="filtro"
+          (keyup.enter)="aplicarFiltro()"
         />
+
+        <button class="btn btn-primary ms-2" (click)="aplicarFiltro()">
+          <i class="bi bi-search"></i> Pesquisar
+        </button>
       </div>
 
       <table class="table table-striped mt-3">
@@ -68,7 +72,6 @@
       <div
         class="d-flex justify-content-between align-items-center mt-4 flex-wrap bg-light text-white p-3"
       >
-        <!-- Contador -->
         <div class="text-muted me-3">
           <small>
             Exibindo página <strong>{{ page + 1 }}</strong> de
@@ -119,58 +122,92 @@
   </div>
 </div>
 
-<ng-template #modalMarcaDetalhe *ngIf="marcaSelecionada">
+<!-- Modal  -->
+<ng-template #modalMarcaDetalhe>
   <div class="modal-header bg-primary">
     <h5 class="modal-title fw-bold">
-      {{ marcaSelecionada.id > 0 ? "Editar Marca" : "Nova Marca" }}
+      {{ registroSelecionado.id > 0 ? "Editar Marca" : "Novo Marca" }}
     </h5>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Fechar"
-      (click)="cancelarModal()"
-    ></button>
+    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
   </div>
 
   <div class="modal-body d-flex justify-content-center">
-    <form #marcaForm="ngForm" (ngSubmit)="salvarMarca(marcaSelecionada)">
-      <!-- Label e Input lado a lado -->
+    <form #form="ngForm" (ngSubmit)="salvarMarca(registroSelecionado)">
       <div class="d-flex align-items-center mb-3">
         <label class="me-2 fw-bold" style="width: 100px">Nome:</label>
         <input
           mdbInput
-          type="text"
-          id="nome"
-          name="nome"
-          [(ngModel)]="marcaSelecionada.nome"
+          [(ngModel)]="registroSelecionado.nome"
           #nome="ngModel"
+          name="nome"
           required
-          placeholder=" Nome "
           class="form-control flex-grow-1"
         />
       </div>
-
-      <!-- Mensagem de erro -->
-      <div
-        *ngIf="nome.invalid && (nome.dirty || nome.touched)"
-        class="text-danger text-center"
-      >
+      <div *ngIf="nome.invalid && (nome.dirty || nome.touched)" class="text-danger text-center">
         O campo <strong>Nome</strong> é obrigatório.
-      </div>
+      </div>     
+
+     
     </form>
   </div>
 
-  <!-- Botões centralizados -->
   <div class="modal-footer d-flex justify-content-center bg-dark">
     <button
       class="btn btn-primary me-2"
-      [disabled]="marcaForm.invalid"
-      (click)="salvarMarca(marcaSelecionada)"
+      [disabled]="form.invalid"
+      (click)="salvarMarca(registroSelecionado)"
     >
       Salvar
     </button>
-    <button class="btn btn-secondary" (click)="cancelarModal()">
+    <button type="button" class="btn btn-secondary" (click)="cancelarModal()">
       Cancelar
     </button>
   </div>
 </ng-template>
+
+<!-- Modal Confirmação Exclusão -->
+<ng-template #modalConfirmacaoExclusao>
+  <div class="modal-header bg-danger text-white">
+    <h5 class="modal-title fw-bold">Confirmação de Exclusão</h5>
+    <button type="button" class="btn-close" (click)="cancelarModal()"></button>
+  </div>
+
+  <div class="modal-body">
+    <p>
+      Tem certeza que deseja excluir o proprietário
+      <strong>{{ registroSelecionado?.nome }}</strong>?
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="cancelarModal()">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="excluirConfirmado()">
+      Excluir
+    </button>
+  </div>
+</ng-template>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  @for (toast of toastService.messages$ | async; track toast) {
+    <div 
+      class="toast show" 
+      [ngClass]="{
+        'bg-success': toast.type === 'success',
+        'bg-danger': toast.type === 'danger',
+        'bg-info': toast.type === 'info'
+      }" 
+      role="alert" 
+      aria-live="assertive" 
+      aria-atomic="true">
+      <div class="toast-header border-0 bg-transparent text-white">
+        <strong class="me-auto text-capitalize">{{ toast.type }}</strong>
+      </div>
+      <div class="toast-body text-white">
+        {{ toast.message }}
+      </div>
+    </div>
+  }
+</div>

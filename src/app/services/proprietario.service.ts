@@ -6,13 +6,13 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-
 import { Proprietario } from '../models/proprietario';
 import { Paginacao } from '../models/paginacao';
 
 @Injectable({
   providedIn: 'root', // Torna o serviço disponível em toda a aplicação
 })
+
 export class ProprietarioService {
   // Injeção do HttpClient para chamadas HTTP
   http = inject(HttpClient);

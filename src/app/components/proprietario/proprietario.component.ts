@@ -36,9 +36,9 @@ import { TelefoneMaskPipe } from '../../pipes/telefone-mask.pipe';
 })
 export class ProprietarioComponent {
   lista: Proprietario[] = [];
-  proprietarioSelecionado!: Proprietario;
+  registroSelecionado!: Proprietario;
 
-  // Paginação
+  //Variáveis para configuração para paginação
   page = 0;
   size = 5;
   totalPages = 0;
@@ -54,13 +54,14 @@ export class ProprietarioComponent {
   proprietarioService = inject(ProprietarioService);
   modalService = inject(MdbModalService);
   // ✅ Injete o novo serviço de toast
-  toastService = inject(ToastService); 
+  toastService = inject(ToastService);
 
   @ViewChild('modalProprietarioDetalhe')
   modalProprietarioDetalhe!: TemplateRef<any>;
 
   // ✅ Nova referência de template para o modal de confirmação
-  @ViewChild('modalConfirmacaoExclusao') modalConfirmacaoExclusao!: TemplateRef<any>;
+  @ViewChild('modalConfirmacaoExclusao')
+  modalConfirmacaoExclusao!: TemplateRef<any>;
 
   modalRef!: MdbModalRef<any>;
 
@@ -84,7 +85,14 @@ export class ProprietarioComponent {
     }
 
     this.proprietarioService
-      .listar(this.page, this.size, this.colunaOrdenada, this.ordem, filtroNome, filtroCpf)
+      .listar(
+        this.page,
+        this.size,
+        this.colunaOrdenada,
+        this.ordem,
+        filtroNome,
+        filtroCpf
+      )
       .subscribe({
         next: (resposta) => {
           this.lista = resposta.content;
@@ -93,7 +101,7 @@ export class ProprietarioComponent {
           this.totalElements = resposta.totalElements;
         },
         // ✅ Use o serviço de toast
-        error: () => this.toastService.showError('Erro ao listar proprietários!'),
+        error: () => this.toastService.showError('Erro ao listar registros!'),
       });
   }
 
@@ -133,12 +141,12 @@ export class ProprietarioComponent {
   }
 
   cadastrarModal() {
-    this.proprietarioSelecionado = { id: 0, nome: '', cpf: '', telefone: '' };
+    this.registroSelecionado = { id: 0, nome: '', cpf: '', telefone: '' };
     this.modalRef = this.modalService.open(this.modalProprietarioDetalhe);
   }
 
   editarModal(proprietario: Proprietario) {
-    this.proprietarioSelecionado = { ...proprietario };
+    this.registroSelecionado = { ...proprietario };
     this.modalRef = this.modalService.open(this.modalProprietarioDetalhe);
   }
 
@@ -148,11 +156,16 @@ export class ProprietarioComponent {
 
   salvarProprietario(proprietario: Proprietario) {
     // Validação front-end
-    if (!proprietario.nome?.trim() || !proprietario.cpf?.trim() || !proprietario.telefone?.trim()) {
+    if (
+      !proprietario.nome?.trim() ||
+      !proprietario.cpf?.trim() ||
+      !proprietario.telefone?.trim()
+    ) {
       return;
     }
 
-    console.log('Proprietário a salvar:', proprietario);
+    // Esta linha é so para debugar
+    console.log('Registro a salvar:', proprietario);
 
     // Remove máscara antes de enviar
     const p = { ...proprietario };
@@ -178,29 +191,35 @@ export class ProprietarioComponent {
         },
         error: (err) => {
           // ✅ Use o serviço de toast
-          this.toastService.showError(`Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`);
+          this.toastService.showError(
+            `Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`
+          );
         },
       });
     } else {
-      this.proprietarioService.atualizar(proprietario, proprietario.id!).subscribe({
-        next: (msg) => {
-          console.log('Retorno do backend:', proprietario);
-          // ✅ Use o serviço de toast
-          this.toastService.showSuccess('Registro atualizado com sucesso!');
-          this.listar();
-          this.modalRef.close();
-        },
-        error: (err) => {
-          // ✅ Use o serviço de toast
-          this.toastService.showError(`Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`);
-        },
-      });
+      this.proprietarioService
+        .atualizar(proprietario, proprietario.id!)
+        .subscribe({
+          next: (msg) => {
+            console.log('Retorno do backend:', proprietario);
+            // ✅ Use o serviço de toast
+            this.toastService.showSuccess('Registro atualizado com sucesso!');
+            this.listar();
+            this.modalRef.close();
+          },
+          error: (err) => {
+            // ✅ Use o serviço de toast
+            this.toastService.showError(
+              `Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`
+            );
+          },
+        });
     }
   }
 
   // ✅ Método que abre o modal de confirmação
   excluir(proprietario: Proprietario) {
-    this.proprietarioSelecionado = proprietario;
+    this.registroSelecionado = proprietario;
     this.modalRef = this.modalService.open(this.modalConfirmacaoExclusao);
   }
 
@@ -210,13 +229,13 @@ export class ProprietarioComponent {
     this.modalRef.close();
 
     // Em seguida, chama o serviço de exclusão
-    this.proprietarioService.excluir(this.proprietarioSelecionado.id!).subscribe({
-      next: (mensagem) => {
+    this.proprietarioService.excluir(this.registroSelecionado.id!).subscribe({
+      next: () => {
         // ✅ Use o serviço de toast
         this.toastService.showSuccess('Registro excluído com sucesso!');
         this.listar();
       },
-      error: (error) => {
+      error: () => {
         // ✅ Use o serviço de toast
         this.toastService.showError('Erro ao excluir proprietário!');
       },
