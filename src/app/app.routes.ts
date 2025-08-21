@@ -1,19 +1,58 @@
 import { Routes } from '@angular/router';
-import {Login} from './components/layout/login/login';
-import {Principal} from './components/layout/principal/principal';
+import { Login } from './components/layout/login/login';
+import { Principal } from './components/layout/principal/principal';
 import { ProprietarioComponent } from './components/proprietario/proprietario.component';
 import { MarcaComponent } from './components/marca/marca.component';
 import { CarroComponent } from './components/carro/carro.component';
+import { HomeComponent } from './components/layout/home/home.component';
 
-// rota para acessar carroslist
 export const routes: Routes = [
-  // caso acesse sem informar uma rota, será feito o redecionamento para rota de carros
+  // Redireciona a rota base para a página de login
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: Login},
-  { path: 'admin', component: Principal, children: [
-      { path: 'carros', component: CarroComponent},     
-      { path: 'proprietarios', component: ProprietarioComponent},
-      { path: 'marcas', component: MarcaComponent},
-  ]},
   
+  // Rota para o componente de login
+  { path: 'login', component: Login },
+  
+  // Rota para o painel de administração (com sidebar, header, etc.)
+  {
+    path: 'admin',
+    component: Principal,
+    children: [
+      // Rota padrão para o componente 'Início'
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
+
+      // Rotas com submenus para Carros
+      {
+        path: 'carros',
+        children: [
+          // Rota para a lista de carros (Consulta)
+          { path: '', component: CarroComponent },
+          // Rota para gerenciar um carro (adição/edição)
+          { path: 'gerenciar', component: CarroComponent },
+        ],
+      },
+
+      // Rotas com submenus para Proprietarios
+      {
+        path: 'proprietarios',
+        children: [
+          { path: '', component: ProprietarioComponent },
+          { path: 'gerenciar', component: ProprietarioComponent },
+        ],
+      },
+
+      // Rotas com submenus para Marcas
+      {
+        path: 'marcas',
+        children: [
+          { path: '', component: MarcaComponent },
+          { path: 'gerenciar', component: MarcaComponent },
+        ],
+      },
+    ],
+  },
+
+  // Rota wildcard para redirecionar URLs inválidas para a página de login
+  { path: '**', redirectTo: 'login' },
 ];

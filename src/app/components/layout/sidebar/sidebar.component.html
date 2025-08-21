@@ -1,0 +1,78 @@
+<div class="sidebar" [class.active]="isCollapsed">
+  <div class="header">
+    <button class="btn btn-transparent" (click)="toggle()">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/home" routerLinkActive="active" (click)="hideAllSubmenus()">
+        <i class="bi bi-house-door"></i>
+        <span>Início</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="toggleSubmenu('carros')">
+        <i class="bi bi-car-front"></i>
+        <span>Carros</span>
+        <i class="bi bi-chevron-down submenu-icon" [class.rotated]="showCarrosSubmenu"></i>
+      </a>
+      <ul class="submenu" *ngIf="showCarrosSubmenu">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/carros" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="bi bi-list-ul"></i>
+            <span>Consulta</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/carros/gerenciar" routerLinkActive="active">
+            <i class="bi bi-plus-circle"></i>
+            <span>Gerenciar</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="toggleSubmenu('marcas')">
+        <i class="bi bi-bookmark"></i>
+        <span>Marcas</span>
+        <i class="bi bi-chevron-down submenu-icon" [class.rotated]="showMarcasSubmenu"></i>
+      </a>
+      <ul class="submenu" *ngIf="showMarcasSubmenu">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/marcas" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="bi bi-list-ul"></i>
+            <span>Consulta</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/marcas/gerenciar" routerLinkActive="active">
+            <i class="bi bi-plus-circle"></i>
+            <span>Gerenciar</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="toggleSubmenu('proprietarios')">
+        <i class="bi bi-person"></i>
+        <span>Proprietários</span>
+        <i class="bi bi-chevron-down submenu-icon" [class.rotated]="showProprietariosSubmenu"></i>
+      </a>
+      <ul class="submenu" *ngIf="showProprietariosSubmenu">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/proprietarios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="bi bi-list-ul"></i>
+            <span>Consulta</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/proprietarios/gerenciar" routerLinkActive="active">
+            <i class="bi bi-plus-circle"></i>
+            <span>Gerenciar</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
