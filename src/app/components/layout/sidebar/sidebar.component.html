@@ -6,26 +6,26 @@
   </div>
   <ul class="nav flex-column">
     <li class="nav-item">
-      <a class="nav-link" routerLink="/home" routerLinkActive="active" (click)="hideAllSubmenus()">
+      <a class="nav-link" routerLink="/admin/home" routerLinkActive="active" (click)="hideAllSubmenus()">
         <i class="bi bi-house-door"></i>
         <span>Início</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="toggleSubmenu('carros')">
+      <a class="nav-link" (click)="toggleSubmenu('carros')">
         <i class="bi bi-car-front"></i>
         <span>Carros</span>
         <i class="bi bi-chevron-down submenu-icon" [class.rotated]="showCarrosSubmenu"></i>
       </a>
       <ul class="submenu" *ngIf="showCarrosSubmenu">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/carros" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a class="nav-link" routerLink="/admin/carros" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <i class="bi bi-list-ul"></i>
             <span>Consulta</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/carros/gerenciar" routerLinkActive="active">
+          <a class="nav-link" routerLink="/admin/carros/gerenciar" routerLinkActive="active">
             <i class="bi bi-plus-circle"></i>
             <span>Gerenciar</span>
           </a>
@@ -33,20 +33,20 @@
       </ul>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="toggleSubmenu('marcas')">
+      <a class="nav-link" (click)="toggleSubmenu('marcas')">
         <i class="bi bi-bookmark"></i>
         <span>Marcas</span>
         <i class="bi bi-chevron-down submenu-icon" [class.rotated]="showMarcasSubmenu"></i>
       </a>
       <ul class="submenu" *ngIf="showMarcasSubmenu">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/marcas" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a class="nav-link" routerLink="/admin/marcas" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <i class="bi bi-list-ul"></i>
             <span>Consulta</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/marcas/gerenciar" routerLinkActive="active">
+          <a class="nav-link" routerLink="/admin/marcas/gerenciar" routerLinkActive="active">
             <i class="bi bi-plus-circle"></i>
             <span>Gerenciar</span>
           </a>
@@ -54,20 +54,20 @@
       </ul>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="toggleSubmenu('proprietarios')">
+      <a class="nav-link" (click)="toggleSubmenu('proprietarios')">
         <i class="bi bi-person"></i>
         <span>Proprietários</span>
         <i class="bi bi-chevron-down submenu-icon" [class.rotated]="showProprietariosSubmenu"></i>
       </a>
       <ul class="submenu" *ngIf="showProprietariosSubmenu">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/proprietarios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a class="nav-link" routerLink="/admin/proprietarios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <i class="bi bi-list-ul"></i>
             <span>Consulta</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/proprietarios/gerenciar" routerLinkActive="active">
+          <a class="nav-link" routerLink="/admin/proprietarios/gerenciar" routerLinkActive="active">
             <i class="bi bi-plus-circle"></i>
             <span>Gerenciar</span>
           </a>

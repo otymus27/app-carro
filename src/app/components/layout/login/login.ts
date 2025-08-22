@@ -1,28 +1,32 @@
-import {Component, inject} from '@angular/core';
-import { MdbFormsModule} from 'mdb-angular-ui-kit/forms';
-import {FormsModule} from '@angular/forms';
-import {Router} from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [MdbFormsModule, FormsModule],
-  templateUrl: './login.html',
-  styleUrl: './login.scss'
+  standalone: true,
+  template: `
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+      <div class="card p-4 shadow-sm" style="width: 350px;">
+        <h3 class="card-title text-center">Login</h3>
+        <p class="text-center">Simule o login para acessar o sistema.</p>
+        <button class="btn btn-primary w-100" (click)="login()">Entrar</button>
+      </div>
+    </div>
+  `,
+  // Lembre-se de adicionar `Router` e `AuthService` nas importações se estiver usando módulos
 })
 export class Login {
-  usuario!:string;
-  senha!: string;
 
-  //aqui é uma injeção de dependencia parecido o autowired do java
-  router = inject(Router);
+  constructor(
+    private authService: AuthService, 
+    private router: Router
+  ) { }
 
-  logar(): void {
-    if (this.usuario == 'admin' && this.senha == '123') {
-      //redirecionar para pagina
-      this.router.navigate(['admin/carros']);
-    }else {
-      alert('Usuário ou senha invalidos!');
-    }
+  login() {
+    // Simula uma validação de credenciais
+    // Você pode adicionar um formulário aqui
+    this.authService.login();
+    this.router.navigate(['/admin']);
   }
-
 }

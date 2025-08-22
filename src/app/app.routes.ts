@@ -5,6 +5,7 @@ import { ProprietarioComponent } from './components/proprietario/proprietario.co
 import { MarcaComponent } from './components/marca/marca.component';
 import { CarroComponent } from './components/carro/carro.component';
 import { HomeComponent } from './components/layout/home/home.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   // Redireciona a rota base para a página de login
@@ -17,6 +18,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: Principal,
+    canActivate: [AuthGuard], // <-- Adicione esta linha
     children: [
       // Rota padrão para o componente 'Início'
       { path: '', redirectTo: 'home', pathMatch: 'full' },
