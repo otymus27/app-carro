@@ -1,42 +1,45 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http'; // Importe o HttpClient
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
+  private readonly API_URL = 'http://localhost:8082/login'; // ⚠️ Ajuste para a URL real do seu backend
   private readonly TOKEN_KEY = 'auth_token';
 
-  constructor() { }
+  // Injetando o HttpClient no construtor
+  constructor(private http: HttpClient) {}
 
   /**
-   * Simula o login e salva um token no localStorage.
-   * Futuramente, esta função fará uma requisição HTTP para o backend.
+   * Envia as credenciais para o backend e salva o token da resposta.
    */
-  public login(): void {
-    // Para simular, salvamos um token de teste.
-    // Futuramente, a resposta do backend (res.token) será usada aqui.
-    const dummyToken = 'jwt_token_simulado_12345';
-    localStorage.setItem(this.TOKEN_KEY, dummyToken);
+  public login(credentials: any): Observable<any> {
+    // Faz a requisição POST para o endpoint de login do backend
+    return this.http.post(`${this.API_URL}`, credentials).pipe(
+      // 'tap' executa uma ação sem modificar o fluxo de dados
+      tap((response: any) => {
+        // Salva o token que vem na resposta do backend
+        this.setToken(response.token); // ⚠️ Supondo que o token vem em uma chave 'token'
+      })
+    );
   }
 
-  /**
-   * Remove o token de autenticação do localStorage para efetuar o logout.
-   */
+  // Métodos já existentes...
+  public setToken(token: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
   public logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
   }
 
-  /**
-   * Retorna o token salvo no localStorage.
-   */
   public getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  /**
-   * Verifica se o usuário está autenticado, checando a existência do token.
-   */
   public isLoggedIn(): boolean {
     return !!this.getToken();
   }

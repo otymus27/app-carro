@@ -1,47 +1,25 @@
-<!-- login.component.html -->
 <div class="container">
-
   <div class="row">
-    <div class ="col-lg-4">
+      <div class ="col-lg-4"></div>
 
-    </div>
+      <div class ="col-lg-4 centralizar topo">
+          <div class="card">
+              <div class="card-body">
+                  <h2>Autentique-se</h2>
+                  <mdb-form-control>
+                      <input mdbInput type="text" id="usuario" class="form-control" placeholder="Digite seu usuário" [(ngModel)]="credentials.username" />
+                  </mdb-form-control>
+                  <br>
 
-    <div class ="col-lg-4 centralizar topo">
-
-
-      <div class="card">
-        <div class="card-body">
-          <h2>Autentique-se</h2>
-          <mdb-form-control>
-            <input mdbInput type="text" id="usuario" class="form-control" placeholder="Digite seu usuário" [(ngModel)]="usuario"  />
-          </mdb-form-control>
-          <br>
-
-          <mdb-form-control>
-            <input mdbInput type="password" id="senha" class="form-control" placeholder="Digite sua senha" [(ngModel)]="senha"/>
-          </mdb-form-control>
-          <br>
-          <button type="button" class="btn btn-primary btn-rounded" mdbRipple (click)="logar()">Entrar</button>
-        </div>
+                  <mdb-form-control>
+                      <input mdbInput type="password" id="senha" class="form-control" placeholder="Digite sua senha" [(ngModel)]="credentials.password"/>
+                  </mdb-form-control>
+                  <br>
+                  <button type="button" class="btn btn-primary btn-rounded" mdbRipple (click)="onSubmit()">Entrar</button>
+              </div>
+          </div>
       </div>
-
-
-    </div>
-    <br>
-    <div class ="col-lg-4">
-
-    </div>
-
+      <br>
+      <div class ="col-lg-4"></div>
   </div>
-
-
-
-
-
-
-
-
 </div>
-
-
-
