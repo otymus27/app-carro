@@ -8,7 +8,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Carro } from '../models/carro';
 import { Paginacao } from '../models/paginacao';
-import { CarroCreateDTO } from '../models/carro-create-dto';
 
 @Injectable({
   providedIn: 'root', // Torna o serviço disponível em toda a aplicação
@@ -70,11 +69,11 @@ export class CarroService {
    */
   // ✅ ALTERADO: Agora espera uma string como resposta
   cadastrar(carro: Partial<Carro>): Observable<string> {
-    return this.http.post<string>(this.API, carro, {
-      responseType: 'text' as 'json',
-    }).pipe(
-      catchError(this.tratarErro)
-    );
+    return this.http
+      .post<string>(this.API, carro, {
+        responseType: 'text' as 'json',
+      })
+      .pipe(catchError(this.tratarErro));
   }
 
   /**

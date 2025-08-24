@@ -14,6 +14,7 @@ export class SidebarComponent {
   showCarrosSubmenu = false;
   showMarcasSubmenu = false;
   showProprietariosSubmenu = false;
+  showUsuariosSubmenu = false;
 
   toggle() {
     this.isCollapsed = !this.isCollapsed;
@@ -24,13 +25,21 @@ export class SidebarComponent {
       this.showCarrosSubmenu = !this.showCarrosSubmenu;
       this.showMarcasSubmenu = false;
       this.showProprietariosSubmenu = false;
+      this.showUsuariosSubmenu = false;
     } else if (submenu === 'marcas') {
       this.showMarcasSubmenu = !this.showMarcasSubmenu;
       this.showCarrosSubmenu = false;
       this.showProprietariosSubmenu = false;
+      this.showUsuariosSubmenu = false;
     } else if (submenu === 'proprietarios') {
       this.showProprietariosSubmenu = !this.showProprietariosSubmenu;
       this.showCarrosSubmenu = false;
+      this.showMarcasSubmenu = false;
+      this.showUsuariosSubmenu = false;
+    } else if (submenu === 'usuarios') {
+      this.showUsuariosSubmenu = !this.showUsuariosSubmenu;
+      this.showCarrosSubmenu = false;
+      this.showProprietariosSubmenu = false;
       this.showMarcasSubmenu = false;
     }
   }
@@ -39,5 +48,6 @@ export class SidebarComponent {
     this.showCarrosSubmenu = false;
     this.showMarcasSubmenu = false;
     this.showProprietariosSubmenu = false;
+    this.showCarrosSubmenu = false;
   }
 }

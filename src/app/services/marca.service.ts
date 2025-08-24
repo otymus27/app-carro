@@ -6,7 +6,6 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Proprietario } from '../models/proprietario';
 import { Paginacao } from '../models/paginacao';
 import { Marca } from '../models/marca';
 

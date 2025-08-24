@@ -1,12 +1,10 @@
-<br />
-
 <div class="container">
   <div class="card">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center bg-dark text-white p-3">
-        <h1>Gerenciamento de Carros</h1>
+      <div class="d-flex justify-content-between align-items-center bg-dark text-white p-3 rounded">
+        <h1>Gerenciamento de Usuários</h1>
         <button class="btn btn-primary btn-rounded btn-shadow me-2" (click)="cadastrarModal()">
-          <i class="bi bi-plus-circle me-1"></i> Novo
+          <i class="bi bi-plus-circle me-1"></i> Novo Usuário
         </button>
       </div>
 
@@ -16,22 +14,8 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Filtrar por modelo"
-            [(ngModel)]="filtroModelo"
-            (keyup.enter)="aplicarFiltros()"
-          />
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Filtrar por marca"
-            [(ngModel)]="filtroMarca"
-            (keyup.enter)="aplicarFiltros()"
-          />
-          <input
-            type="number"
-            class="form-control"
-            placeholder="Filtrar por ano"
-            [(ngModel)]="filtroAno"
+            placeholder="Filtrar por nome de usuário"
+            [(ngModel)]="filtroUsername"
             (keyup.enter)="aplicarFiltros()"
           />
         </div>
@@ -44,14 +28,14 @@
         </button>
       </div>
 
-      <!-- Tabela  -->
+      <!-- Tabela de Usuários -->
       <table class="table table-striped mt-3">
         <thead>
           <tr>
-            <th (click)="ordenarPor('modelo')" style="cursor: pointer">
-              Modelo
+            <th (click)="ordenarPor('id')" style="cursor: pointer">
+              ID
               <i
-                *ngIf="colunaOrdenada === 'modelo'"
+                *ngIf="colunaOrdenada === 'id'"
                 class="bi"
                 [ngClass]="{
                   'bi-caret-up-fill': ordem === 'asc',
@@ -59,10 +43,10 @@
                 }"
               ></i>
             </th>
-            <th (click)="ordenarPor('marca')" style="cursor: pointer">
-              Marca
+            <th (click)="ordenarPor('username')" style="cursor: pointer">
+              Nome de Usuário
               <i
-                *ngIf="colunaOrdenada === 'marca'"
+                *ngIf="colunaOrdenada === 'username'"
                 class="bi"
                 [ngClass]="{
                   'bi-caret-up-fill': ordem === 'asc',
@@ -70,60 +54,42 @@
                 }"
               ></i>
             </th>
-            <th (click)="ordenarPor('cor')" style="cursor: pointer">
-              Cor
-              <i
-                *ngIf="colunaOrdenada === 'cor'"
-                class="bi"
-                [ngClass]="{
-                  'bi-caret-up-fill': ordem === 'asc',
-                  'bi-caret-down-fill': ordem === 'desc'
-                }"
-              ></i>
-            </th>
-            <th (click)="ordenarPor('ano')" style="cursor: pointer">
-              Ano
-              <i
-                *ngIf="colunaOrdenada === 'ano'"
-                class="bi"
-                [ngClass]="{
-                  'bi-caret-up-fill': ordem === 'asc',
-                  'bi-caret-down-fill': ordem === 'desc'
-                }"
-              ></i>
-            </th>
-            <th>Proprietários</th>
+            <th>Roles</th>
             <th>Ação</th>
           </tr>
         </thead>
         <tbody>
-          @for (carro of lista; track carro.id) {
+          @for (usuario of lista; track usuario.id) {
           <tr>
-            <td>{{ carro.modelo }}</td>
-            <td>{{ carro.marca.nome }}</td>
-            <td>{{ carro.cor }}</td>
-            <td>{{ carro.ano }}</td>
+            <td>{{ usuario.id }}</td>
+            <td>{{ usuario.username }}</td>
             <td>
-              @for (p of carro.proprietarios; track p.id) {
-              {{ p.nome }}<span *ngIf="!$last">, </span>
+              @for (role of usuario.roles; track role) {
+              <span class="badge bg-info me-1">{{ role.nome }}</span>
               }
             </td>
+
+          
             <td>
               <button
                 class="btn btn-warning btn-sm btn-shadow me-1"
-                (click)="editarModal(carro)"
-                title="Editar"
+                (click)="editarModal(usuario)"
+                title="Editar Usuário"
               >
                 <i class="bi bi-pencil-square"></i>
               </button>
               <button
                 class="btn btn-danger btn-sm btn-shadow"
-                (click)="excluir(carro)"
-                title="Excluir"
+                (click)="excluir(usuario)"
+                title="Excluir Usuário"
               >
                 <i class="bi bi-trash"></i>
               </button>
             </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="4" class="text-center">Nenhum usuário encontrado.</td>
           </tr>
           }
         </tbody>
@@ -179,109 +145,68 @@
 </div>
 
 
-
 <!-- Aqui temos os modais de cadastro e edição -->
-<ng-template #modalCarroDetalhe>
+<ng-template #modalUserDetalhe>
   <div class="modal-header bg-primary">
     <h5 class="modal-title fw-bold">
-      {{ registroSelecionado.id > 0 ? "Editar Carro" : "Novo Carro" }}
+      {{ registroSelecionado.id > 0 ? "Editar Usuário" : "Novo Usuário" }}
     </h5>
     <button type="button" class="btn-close" (click)="cancelarModal()"></button>
   </div>
 
   <div class="modal-body d-flex justify-content-center">
-    <form #carroForm="ngForm" (ngSubmit)="salvarCarro(registroSelecionado)">
+    <form #userForm="ngForm" (ngSubmit)="salvarUsuario(registroSelecionado)">
       <div class="d-flex align-items-center mb-3">
-        <label class="me-2 fw-bold" style="width: 100px">Marca:</label>
-        <select
-          mdbInput
-          class="form-select"
-          [(ngModel)]="registroSelecionado.marca"
-          #marca="ngModel"
-          name="marca"
-          required
-          class="form-control flex-grow-1"
-        >
-          <option [ngValue]="null" disabled selected>Selecione uma marca</option>
-          @for (m of marcas; track m.id) {
-          <option [ngValue]="m">{{ m.nome }}</option>
-          }
-        </select>
-      </div>
-      <div
-        *ngIf="marca.invalid && (marca.dirty || marca.touched)"
-        class="text-danger text-center"
-      >
-        O campo Marca é obrigatório.
-      </div>
-
-      <div class="d-flex align-items-center mb-3">
-        <label class="me-2 fw-bold" style="width: 100px">Modelo:</label>
+        <label class="me-2 fw-bold" style="width: 120px">Nome de Usuário:</label>
         <input
           mdbInput
-          [(ngModel)]="registroSelecionado.modelo"
-          #modelo="ngModel"
-          name="modelo"
+          [(ngModel)]="registroSelecionado.username"
+          #username="ngModel"
+          name="username"
           required
           class="form-control flex-grow-1"
         />
       </div>
       <div
-        *ngIf="modelo.invalid && (modelo.dirty || modelo.touched)"
+        *ngIf="username.invalid && (username.dirty || username.touched)"
         class="text-danger text-center"
       >
-        O campo Modelo é obrigatório.
+        O campo Nome de Usuário é obrigatório.
       </div>
 
       <div class="d-flex align-items-center mb-3">
-        <label class="me-2 fw-bold" style="width: 100px">Cor:</label>
+        <label class="me-2 fw-bold" style="width: 120px">Senha:</label>
         <input
           mdbInput
-          [(ngModel)]="registroSelecionado.cor"
-          #cor="ngModel"
-          name="cor"
-          required
+          type="password"
+          [(ngModel)]="registroSelecionado.password"
+          #password="ngModel"
+          name="password"
+          [required]="!registroSelecionado.id || registroSelecionado.id <= 0"
+          [disabled]="registroSelecionado.id > 0" 
           class="form-control flex-grow-1"
         />
       </div>
       <div
-        *ngIf="cor.invalid && (cor.dirty || cor.touched)"
+        *ngIf="password.invalid && (password.dirty || password.touched)"
         class="text-danger text-center"
       >
-        O campo Cor é obrigatório.
+        A senha é obrigatória para novos usuários.
       </div>
 
-      <div class="d-flex align-items-center mb-3">
-        <label class="me-2 fw-bold" style="width: 100px">Ano:</label>
-        <input
-          mdbInput
-          type="number"
-          [(ngModel)]="registroSelecionado.ano"
-          #ano="ngModel"
-          name="ano"
-          required
-          class="form-control flex-grow-1"
-        />
-      </div>
-      <div
-        *ngIf="ano.invalid && (ano.dirty || ano.touched)"
-        class="text-danger text-center"
-      >
-        O campo Ano é obrigatório.
-      </div>
-
+      <!-- Seção de Roles -->
       <div class="mt-3">
-        <label><strong>Proprietarios(s):</strong></label>
+        <label><strong>Roles(s):</strong></label>
         <ul class="list-group mb-2">
-          @for (p of registroSelecionado.proprietarios; track p.id) {
+          @for (p of registroSelecionado.roles; track p.id) {
           <li
             class="list-group-item d-flex justify-content-between align-items-center"
           >
-            {{ p.nome }} - {{ p.cpf }}
+            {{ p.nome }} 
             <button
               type="button"
               class="btn btn-sm btn-danger"
-              (click)="removerProprietario(p)"
+              (click)="removerRole(p)"
             >
               ❌
             </button>
@@ -291,11 +216,12 @@
         <button
           type="button"
           class="btn btn-outline-success btn-sm"
-          (click)="abrirModalProprietarios()"
+          (click)="abrirModalRoles()"
         >
           ➕ Adicionar Proprietário
         </button>
       </div>
+
     </form>
   </div>
 
@@ -303,8 +229,8 @@
     <div class="d-flex justify-content-end mt-3 gap-2">
       <button
         class="btn btn-primary me-2"
-        [disabled]="carroForm.invalid"
-        (click)="salvarCarro(registroSelecionado)"
+        [disabled]="userForm.invalid || !registroSelecionado.roles || registroSelecionado.roles.length === 0"
+        (click)="salvarUsuario(registroSelecionado)"
       >
         Salvar
       </button>
@@ -315,6 +241,7 @@
   </div>
 </ng-template>
 
+<!-- Modal de Confirmação de Exclusão -->
 <ng-template #modalConfirmacaoExclusao>
   <div class="modal-header bg-danger text-white">
     <h5 class="modal-title fw-bold">Confirmação de Exclusão</h5>
@@ -323,8 +250,8 @@
 
   <div class="modal-body">
     <p>
-      Tem certeza que deseja excluir o carro
-      <strong>{{ registroSelecionado?.modelo }}</strong>?
+      Tem certeza que deseja excluir o usuário
+      <strong>{{ registroSelecionado?.username }}</strong>?
     </p>
   </div>
 
@@ -338,26 +265,26 @@
   </div>
 </ng-template>
 
-<ng-template #modalProprietarios>
+<ng-template #modalRoles>
   <div class="modal-header">
-    <h5 class="modal-title">Selecionar Proprietários</h5>
+    <h5 class="modal-title">Selecionar Roles</h5>
     <button
       type="button"
       class="btn-close"
-      (click)="fecharModalProprietarios()"
+      (click)="fecharModalRoles()"
     ></button>
   </div>
   <div class="modal-body">
     <ul class="list-group">
-      @for (p of proprietariosDisponiveis; track p.id) {
+      @for (p of rolesDisponiveis; track p.id) {
       <li
         class="list-group-item d-flex justify-content-between align-items-center"
       >
-        {{ p.nome }} - {{ p.cpf }}
+        {{ p.nome }} 
         <button
           type="button"
           class="btn btn-sm btn-success"
-          (click)="adicionarProprietario(p)"
+          (click)="adicionarRole(p)"
         >
           ➕
         </button>
@@ -367,6 +294,8 @@
   </div>
 </ng-template>
 
+
+<!-- Componente de Toast -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
   @for (toast of toastService.messages$ | async; track toast) {
     <div 
@@ -388,3 +317,4 @@
     </div>
   }
 </div>
+

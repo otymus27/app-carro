@@ -6,14 +6,15 @@ import { MarcaComponent } from './components/marca/marca.component';
 import { CarroComponent } from './components/carro/carro.component';
 import { HomeComponent } from './components/layout/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
+import { UsuarioComponent } from './components/usuario/usuario.component';
 
 export const routes: Routes = [
   // Redireciona a rota base para a página de login
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  
+
   // Rota para o componente de login
   { path: 'login', component: Login },
-  
+
   // Rota para o painel de administração (com sidebar, header, etc.)
   {
     path: 'admin',
@@ -50,6 +51,15 @@ export const routes: Routes = [
         children: [
           { path: '', component: MarcaComponent },
           { path: 'gerenciar', component: MarcaComponent },
+        ],
+      },
+
+      // Rotas com submenus para Marcas
+      {
+        path: 'usuarios',
+        children: [
+          { path: '', component: UsuarioComponent },
+          { path: 'gerenciar', component: UsuarioComponent },
         ],
       },
     ],

@@ -1,24 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 import {
   MdbModalModule,
   MdbModalRef,
   MdbModalService,
 } from 'mdb-angular-ui-kit/modal';
-
 // ✅ Importe o serviço de Toast
 import { ToastService } from '../../services/toast.service';
-
 import { Carro } from '../../models/carro';
 import { CarroService } from '../../services/carro.service';
 import { Marca } from '../../models/marca';
 import { Proprietario } from '../../models/proprietario';
 import { MarcaService } from '../../services/marca.service';
 import { ProprietarioService } from '../../services/proprietario.service';
-import { CarroCreateDTO } from '../../models/carro-create-dto';
 import { Paginacao } from '../../models/paginacao';
 
 @Component({
@@ -164,6 +160,7 @@ export class CarroComponent {
     });
   }
 
+  // ✅ Método para abrir modal de cadastro
   cadastrarModal() {
     this.registroSelecionado = {
       id: 0,
@@ -176,6 +173,7 @@ export class CarroComponent {
     this.modalRef = this.modalService.open(this.modalCarroDetalhe);
   }
 
+  // ✅ Método para abrir modal de edição
   editarModal(carro: Carro) {
     const marcaSelecionada = this.marcas.find(
       (m) => m.id === carro.marca.id
@@ -236,6 +234,7 @@ export class CarroComponent {
   }
   // =======================================
 
+  // ✅ Método para salvar (cadastrar ou atualizar)
   salvarCarro(carro: Carro) {
     if (
       !carro.modelo?.trim() ||
