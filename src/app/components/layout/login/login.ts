@@ -30,7 +30,9 @@ export class Login {
         // Se o login for bem-sucedido (o token foi salvo pelo AuthService)
         console.log('Login bem-sucedido!');
         // Redireciona o usuário para a página protegida (ex: dashboard)
-        this.router.navigate(['/principal']);
+        this.router.navigate(['/admin/home']);
+
+        console.log(this.credentials);
       },
       (error) => {
         // Se houver um erro na requisição (ex: 401 Unauthorized)

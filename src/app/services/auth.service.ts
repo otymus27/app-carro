@@ -21,8 +21,14 @@ export class AuthService {
     return this.http.post(`${this.API_URL}`, credentials).pipe(
       // 'tap' executa uma ação sem modificar o fluxo de dados
       tap((response: any) => {
-        // Salva o token que vem na resposta do backend
-        this.setToken(response.token); // ⚠️ Supondo que o token vem em uma chave 'token'
+        // ✅ Verifique se 'response.token' realmente contém o token JWT do seu backend
+          console.log('Backend response after login:', response);
+          if (response && response.accessToken) {
+            this.setToken(response.accessToken);
+            console.log('Token salvo:', this.getToken());
+          } else {
+            console.error('Token not found in login response!', response);
+          }
       })
     );
   }
