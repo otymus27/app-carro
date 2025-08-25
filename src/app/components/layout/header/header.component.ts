@@ -1,21 +1,25 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router'; // Importe o Router
+import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Router, RouterModule } from '@angular/router'; // Importe o Router
 import { AuthService } from '../../../services/auth.service'; // Importe o AuthService
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [],
+  imports: [RouterModule, CommonModule], // ✅ Adicione CommonModule aqui
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+  router = inject(Router);
+  authService = inject(AuthService); // ✅ Injete o AuthService
   @Output() toggleSidebarEvent = new EventEmitter<void>();
 
-  constructor(
-    private authService: AuthService, // Injete o AuthService
-    private router: Router // Injete o Router
-  ) {}
+  constructor() {}
+
+  // ✅ Variáveis para armazenar o nome de usuário e as roles (usando Observables para reatividade)
+  loggedInUsername$ = this.authService.loggedInUsername$;
+  loggedInRoles$ = this.authService.loggedInRoles$;
 
   toggleSidebar() {
     this.toggleSidebarEvent.emit();
