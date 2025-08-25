@@ -118,6 +118,9 @@ export class CarroComponent {
   aplicarFiltros() {
     this.page = 0; // Sempre volta para a primeira página ao aplicar o filtro
     this.listar();
+    this.filtroModelo = ''; // limpa campo de filtro
+    this.filtroMarca = ''; // limpa campo de filtro
+    this.filtroAno = 0; // limpa campo de filtro
   }
 
   limparFiltros() {

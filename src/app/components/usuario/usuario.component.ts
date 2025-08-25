@@ -106,6 +106,7 @@ export class UsuarioComponent {
   aplicarFiltros() {
     this.page = 0; // Sempre volta para a primeira página ao aplicar o filtro
     this.listar();
+    this.filtroUsername = ''; // Limpa campo de busca
   }
 
   // ✅ Método para limpar filtros
@@ -240,7 +241,12 @@ export class UsuarioComponent {
           // ✅ Debug para retorno do backend
           console.log('Retorno do backend:', usuarioDTO);
           // ✅ Log de debug para o objeto enviado no cadastro
-      console.log('%c[Debug - Cadastro]%c Objeto enviado para o backend:', 'color: lightblue; font-weight: bold;', 'color: unset;', isNovoRegistro);
+          console.log(
+            '%c[Debug - Cadastro]%c Objeto enviado para o backend:',
+            'color: lightblue; font-weight: bold;',
+            'color: unset;',
+            isNovoRegistro
+          );
 
           this.toastService.showSuccess('Usuário cadastrado com sucesso!');
           this.listar();
@@ -261,13 +267,22 @@ export class UsuarioComponent {
       };
 
       // ✅ Apenas inclui a senha no DTO se a edição de senha foi habilitada E o campo não estiver vazio
-      if (this.editingPassword && usuario.password && usuario.password.trim() !== '') {
+      if (
+        this.editingPassword &&
+        usuario.password &&
+        usuario.password.trim() !== ''
+      ) {
         isAtualizarRegistro.password = usuario.password;
       }
 
       // ✅ Log de debug para o objeto enviado na atualização
-      console.log('%c[Debug - Atualização]%c Objeto enviado para o backend:', 'color: lightgreen; font-weight: bold;', 'color: unset;', isAtualizarRegistro);
-    
+      console.log(
+        '%c[Debug - Atualização]%c Objeto enviado para o backend:',
+        'color: lightgreen; font-weight: bold;',
+        'color: unset;',
+        isAtualizarRegistro
+      );
+
       // ✅ Chamada ao serviço com o objeto parcial
       this.usuarioService.atualizar(usuario.id!, usuario).subscribe({
         next: () => {

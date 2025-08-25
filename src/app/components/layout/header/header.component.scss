@@ -16,3 +16,9 @@ header {
     border: 2px solid white;
   }
 }
+
+.header-logo {
+  height: 50px; /* Define a altura da logo */
+  width: auto; /* Mantém a proporção da imagem */
+  margin-right: 20px; /* Adiciona um espaço à direita */
+}

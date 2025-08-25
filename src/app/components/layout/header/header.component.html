@@ -6,22 +6,16 @@
   </button>
 
   <div class="d-flex align-items-center ms-3">
-    <img src="assets/logo.png" alt="Logo da Empresa" class="logo me-3" />
+    <img src="/img_transformers.png" alt="Logo da Empresa" class="logo me-3" />
     <h3 class="mb-0 d-none d-md-block">Gestão de Carros</h3>
   </div>
 
   <!-- ✅ Exibe o nome do usuário logado -->
   <div
     *ngIf="authService.isLoggedIn$ | async"
-    class="user-info me-3 d-flex flex-column align-items-end"
+    class="user-info me-3 d-flex align-items-end"
   >
-    <span class="fw-bold">Bem-vindo, {{ loggedInUsername$ | async }}!</span>
-    <small>
-      Perfil:
-      <span *ngFor="let role of loggedInRoles$ | async; last as isLast">
-        {{ role }}<span *ngIf="!isLast">,</span>
-      </span>
-    </small>
+    <span class="fw-bold">Bem-vindo, {{ loggedInUsername$ | async }}</span>
   </div>
 
   <ul class="nav">
