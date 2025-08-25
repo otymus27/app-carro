@@ -46,19 +46,7 @@ export class UsuarioService {
     if (username) params = params.set('username', username);
 
     // O backend NÃO deve retornar a senha em operações GET por segurança.
-    return this.http
-      .get<Paginacao<Usuario>>(this.API, { params })
-      .pipe(catchError(this.tratarErro));
-  }
-
-  /**
-   * Lista todas as roles disponíveis no sistema.
-   */
-  listarRoles(): Observable<string[]> {
-    // ⚠️ Ajuste o endpoint conforme a sua API no backend
-    return this.http
-      .get<string[]>(`${this.API}/roles`)
-      .pipe(catchError(this.tratarErro));
+     return this.http.get<Paginacao<Usuario>>(this.API, { params });
   }
 
   /**
@@ -89,13 +77,15 @@ export class UsuarioService {
    * Usa PATCH para atualizações parciais.
    * @param id ID do usuário
    * @param usuario Objeto com dados do usuário a serem atualizados (senha opcional)
+   * @returns Um Observable que emite o objeto Usuario atualizado pelo backend.
    */
-  atualizar(usuario: Usuario, id: number): Observable<string> {
-    // Retorna o User atualizado (sem a senha)
-    return this.http
-      .patch<string>(`${this.API}/${id}`, usuario)
-      .pipe(catchError(this.tratarErro));
+  atualizar(id: number, usuario: Partial<Usuario>): Observable<Usuario> { // ✅ Recebe Partial<Usuario> e retorna Observable<Usuario>
+     return this.http.patch<Usuario>(`${this.API}/${id}`, usuario, {
+      responseType: 'text' as 'json', // backend retorna texto, não JSON
+    });// ✅ Espera JSON de retorno, remove responseType
+      
   }
+
 
   /**
    * Exclui um usuário pelo ID.
@@ -103,11 +93,9 @@ export class UsuarioService {
    */
   excluir(id: number): Observable<string> {
     // Backend deve retornar uma mensagem de sucesso (String)
-    return this.http
-      .delete<string>(`${this.API}/${id}`, {
-        responseType: 'text' as 'json', // Opcional: Se o backend retornar apenas texto simples
-      })
-      .pipe(catchError(this.tratarErro));
+    return this.http.delete<string>(`${this.API}/${id}`, {
+      responseType: 'text' as 'json',
+    });
   }
 
   /**

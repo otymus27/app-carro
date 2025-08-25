@@ -239,6 +239,9 @@ export class UsuarioComponent {
         next: () => {
           // ✅ Debug para retorno do backend
           console.log('Retorno do backend:', usuarioDTO);
+          // ✅ Log de debug para o objeto enviado no cadastro
+      console.log('%c[Debug - Cadastro]%c Objeto enviado para o backend:', 'color: lightblue; font-weight: bold;', 'color: unset;', isNovoRegistro);
+
           this.toastService.showSuccess('Usuário cadastrado com sucesso!');
           this.listar();
           this.modalRef.close();
@@ -251,13 +254,22 @@ export class UsuarioComponent {
         },
       });
     } else {
-      // Para atualização, 'password' é opcional no UserUpdateDTO
-      // Se a senha for fornecida no formulário de edição, inclua-a no DTO
-      if (usuario.password && usuario.password.trim() !== '') {
-        usuarioDTO.password = usuario.password;
+      // ✅ Para atualização: Começamos com um objeto parcial que NÃO tem a senha por padrão
+      const isAtualizarRegistro: Partial<Usuario> = {
+        username: usuario.username,
+        roles: this.rolesDisponiveis as Role[], // Envia roles como objetos Role
+      };
+
+      // ✅ Apenas inclui a senha no DTO se a edição de senha foi habilitada E o campo não estiver vazio
+      if (this.editingPassword && usuario.password && usuario.password.trim() !== '') {
+        isAtualizarRegistro.password = usuario.password;
       }
 
-      this.usuarioService.atualizar(usuario, usuario.id!).subscribe({
+      // ✅ Log de debug para o objeto enviado na atualização
+      console.log('%c[Debug - Atualização]%c Objeto enviado para o backend:', 'color: lightgreen; font-weight: bold;', 'color: unset;', isAtualizarRegistro);
+    
+      // ✅ Chamada ao serviço com o objeto parcial
+      this.usuarioService.atualizar(usuario.id!, usuario).subscribe({
         next: () => {
           this.toastService.showSuccess('Usuário atualizado com sucesso!');
           this.listar();
