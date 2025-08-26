@@ -14,6 +14,9 @@ import { RoleService } from '../../services/role.service';
 import { Usuario } from '../../models/usuario';
 import { UsuarioService } from '../../services/usuario.service';
 import { Role } from '../../models/role';
+import { RecuperarSenhaService } from '../../services/recuperar-senha.service';
+import { ModalConfirmacaoComponent } from '../modal/confirmacao/confirmacao.component';
+import { InformacaoComponent } from '../modal/informacao/informacao.component';
 
 @Component({
   selector: 'app-user', // ✅ Seletor atualizado para 'app-user'
@@ -49,6 +52,9 @@ export class UsuarioComponent {
   roleService = inject(RoleService);
   modalService = inject(MdbModalService);
   toastService = inject(ToastService);
+
+  // ✅ Injetando o serviço de recuperação de senha
+  private recuperarSenhaService = inject(RecuperarSenhaService);
 
   @ViewChild('modalUserDetalhe') modalUserDetalhe!: TemplateRef<any>; // ✅ Referência para o modal de detalhes do usuário
   modalRef!: MdbModalRef<any>;
@@ -318,5 +324,33 @@ export class UsuarioComponent {
         this.toastService.showError('Erro ao excluir usuário!');
       },
     });
+  }
+
+  mensagem: string | null = null;
+
+  resetarSenha(id: number): void {
+    // ✅ Passo 1: Abrir o modal de confirmação do MDB
+    this.modalService
+      .open(ModalConfirmacaoComponent)
+      .onClose.subscribe((result: boolean) => {
+        // ✅ Passo 2: Lidar com a resposta do modal
+        if (result) {
+          // O usuário confirmou. Faça a chamada para o serviço.
+          this.recuperarSenhaService.gerarSenhaProvisoria(id).subscribe({
+            next: (response) => {
+              const senhaGerada = response.senhaGerada;
+              // ✅ 3. Abre o modal de informação para exibir a senha
+              this.modalService.open(InformacaoComponent, {
+                data: {
+                  password: senhaGerada, // Passa a senha como 'data' para o modal
+                },
+              });
+            },
+            error: (err) => {
+              this.mensagem = err.error.message;
+            },
+          });
+        }
+      });
   }
 }
