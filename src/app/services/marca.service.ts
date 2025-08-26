@@ -42,8 +42,10 @@ export class MarcaService {
       .set('sortField', sortField) // campo de ordenação
       .set('sortDir', sortDirection); // direção da ordenação
 
-    // Aplica filtros se existirem
-    if (nome) params = params.set('nome', nome);
+    // ✅ A verificação e reatribuição são cruciais
+    if (nome) {
+      params = params.set('nome', nome);
+    }
 
     return this.http.get<Paginacao<Marca>>(this.API, { params });
     
