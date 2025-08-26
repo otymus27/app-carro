@@ -1,0 +1,37 @@
+<div class="container mt-5">
+  <h2>Consulta de Marcas</h2>
+  <hr />
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="nomeFiltro" class="form-label">Filtrar por Nome</label>
+      <input type="text" class="form-control" [(ngModel)]="nomeFiltro" />
+    </div>
+    <div class="col-md-6 d-flex align-items-end">
+      <button (click)="buscarMarcas()" class="btn btn-primary me-2">Buscar</button>
+    </div>
+  </div>
+
+  <h3 class="mt-4">Resultados</h3>
+
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th >IDss</th>
+        <th (click)="alternarOrdenacao('nome')">Nome</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let marca of marcas">
+        <td>{{ marca.id }}</td>
+        <td>{{ marca.nome }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="mt-4">
+    <button (click)="gerarRelatorioMarca('pdf')" class="btn btn-danger me-2">Gerar PDF</button>
+    <button (click)="gerarRelatorioMarca('xls')" class="btn btn-success me-2">Gerar Excel</button>
+    <button (click)="gerarRelatorioMarca('csv')" class="btn btn-warning">Gerar CSV</button>
+  </div>
+</div>

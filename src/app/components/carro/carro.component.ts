@@ -142,7 +142,7 @@ export class CarroComponent {
   }
 
   carregarMarcas() {
-    this.marcaService.listar(this.page).subscribe({
+    this.marcaService.listar().subscribe({
       next: (lista: Paginacao<Marca>) => {
         this.marcas = lista.content;
       },

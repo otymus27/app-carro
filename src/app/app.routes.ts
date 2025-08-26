@@ -7,7 +7,7 @@ import { CarroComponent } from './components/carro/carro.component';
 import { HomeComponent } from './components/layout/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { UsuarioComponent } from './components/usuario/usuario.component';
-import { RelatorioComponent } from './components/relatorio/relatorio.component';
+import { MarcaComponentRelatorio } from './components/relatorio/marca/relatorio.marca.component';
 
 export const routes: Routes = [
   // Redireciona a rota base para a página de login
@@ -50,7 +50,7 @@ export const routes: Routes = [
       {
         path: 'marcas',
         children: [
-          { path: 'consulta', component: RelatorioComponent },
+          { path: 'consulta', component: MarcaComponentRelatorio },
           { path: 'gerenciar', component: MarcaComponent },
         ],
       },

@@ -61,11 +61,11 @@ export class MarcaComponent {
   listar() {
     this.marcaService
       .listar(
+        this.filtro,
         this.page,
         this.size,
         this.colunaOrdenada,
-        this.ordem,
-        this.filtro
+        this.ordem,        
       )
       .subscribe({
         next: (resposta) => {

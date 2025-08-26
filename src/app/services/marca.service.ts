@@ -27,15 +27,14 @@ export class MarcaService {
    * @param size Tamanho da página (default = 5)
    * @param sortField Campo usado para ordenação (default = 'id')
    * @param sortDirection Direção da ordenação ('asc' ou 'desc')
-   * @param nome Filtro por nome (opcional)
-   * @param cpf Filtro por CPF (opcional)
+   * @param nome Filtro por nome (opcional)   
    */
   listar(
+    nome?: string,
     page: number = 0,
     size: number = 5,
     sortField: keyof Marca = 'id',
-    sortDirection: 'asc' | 'desc' = 'asc',
-    nome?: string
+    sortDirection: 'asc' | 'desc' = 'asc',    
   ): Observable<Paginacao<Marca>> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -47,6 +46,7 @@ export class MarcaService {
     if (nome) params = params.set('nome', nome);
 
     return this.http.get<Paginacao<Marca>>(this.API, { params });
+    
   }
 
   /**
