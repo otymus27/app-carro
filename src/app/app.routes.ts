@@ -28,7 +28,11 @@ export const routes: Routes = [
     children: [
       // Rota padrão para o componente 'Início'
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent },
+      {
+        path: 'home',
+        component: HomeComponent,
+        data: { roles: ['ADMIN', 'BASIC', 'GERENTE'] }, // ✅ Todos os perfis podem acessar
+      },
 
       // Rotas com submenus para Carros
       {
@@ -54,8 +58,16 @@ export const routes: Routes = [
       {
         path: 'marcas',
         children: [
-          { path: 'consulta', component: MarcaComponentRelatorio },
-          { path: 'gerenciar', component: MarcaComponent },
+          {
+            path: 'consulta',
+            component: MarcaComponentRelatorio,
+            data: { roles: ['ADMIN', 'GERENTE'] }, // ✅ Só admin pode acessar
+          },
+          {
+            path: 'gerenciar',
+            component: MarcaComponent,
+            data: { roles: ['ADMIN'] }, // ✅ Só admin pode acessar
+          },
         ],
       },
 
@@ -63,8 +75,16 @@ export const routes: Routes = [
       {
         path: 'usuarios',
         children: [
-          { path: '', component: UsuarioComponent },
-          { path: 'gerenciar', component: UsuarioComponent },          
+          {
+            path: '',
+            component: UsuarioComponent,
+            data: { roles: ['ADMIN'] }, // ✅ Só admin pode acessar
+          },
+          {
+            path: 'gerenciar',
+            component: UsuarioComponent,
+            data: { roles: ['ADMIN'] }, // ✅ Só admin pode acessar
+          },
         ],
       },
     ],

@@ -49,7 +49,8 @@
         </li>
       </ul>
     </li>
-    <li class="nav-item">
+    <!-- Aqui vai exibir o menu para o perfl de gerente e basic -->
+    <li class="nav-item" *ngIf="isGerente || isBasic">
       <a class="nav-link" (click)="toggleSubmenu('marcas')">
         <i class="bi bi-bookmark"></i>
         <span>Marcas</span>
@@ -117,7 +118,8 @@
       </ul>
     </li>
 
-    <li class="nav-item">
+    <!-- Aqui vai exibir o menu só para o perfil admin -->
+    <li class="nav-item" *ngIf="isAdmin()">
       <a class="nav-link" (click)="toggleSubmenu('usuarios')">
         <i class="bi bi-person"></i>
         <span>Usuários</span>
@@ -148,8 +150,6 @@
             <span>Gerenciar</span>
           </a>
         </li>
-
-       
       </ul>
     </li>
   </ul>

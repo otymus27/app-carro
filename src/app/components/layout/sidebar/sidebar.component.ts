@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,6 +11,8 @@ import { RouterModule } from '@angular/router';
   styleUrl: './../sidebar/sidebar.component.scss',
 })
 export class SidebarComponent {
+  private authService = inject(AuthService);
+
   isCollapsed = false;
   showCarrosSubmenu = false;
   showMarcasSubmenu = false;
@@ -49,5 +52,21 @@ export class SidebarComponent {
     this.showMarcasSubmenu = false;
     this.showProprietariosSubmenu = false;
     this.showCarrosSubmenu = false;
+  }
+
+  // ✅ Método para verificar se o usuário é ADMIN
+  isAdmin(): boolean {
+    const roles = this.authService.getLoggedInRoles();
+    return roles.includes('ADMIN');
+  }
+
+  isGerente(): boolean {
+    const roles = this.authService.getLoggedInRoles();
+    return roles.includes('GERENTE');
+  }
+
+  isBasic(): boolean {
+    const roles = this.authService.getLoggedInRoles();
+    return roles.includes('BASIC');
   }
 }

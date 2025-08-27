@@ -87,13 +87,6 @@ export class AuthService {
     return this._loggedInRoles.getValue();
   }
 
-  // Limpa o token e todas as informações do usuário do localStorage e redireciona para o login
-  logout(): void {
-    this.clearSession();
-    this.router.navigate(['/login']);
-    console.log('Logout realizado.');
-  }
-
   private clearSession(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USERNAME_KEY); // ✅ Remove info do usuário
@@ -107,8 +100,10 @@ export class AuthService {
   login(credenciais: any): Observable<any> {
     return this.http.post<AuthResponse>(this.API_URL, credenciais).pipe(
       tap((response: AuthResponse) => {
-        this.setToken(response.accessToken);
-        console.log('Backend response after login:', response);
+        // ✅ Apenas chama setToken() e deixa a lógica de extração lá
+        if (response.accessToken) {
+          this.setToken(response.accessToken);
+        }
 
         // ✅ Adicione esta linha para depuração
         console.log('Resposta completa do backend:', response);
@@ -136,5 +131,12 @@ export class AuthService {
       }),
       map(() => true)
     );
+  }
+
+  // Limpa o token e todas as informações do usuário do localStorage e redireciona para o login
+  logout(): void {
+    this.clearSession();
+    this.router.navigate(['/login']);
+    console.log('Logout realizado.');
   }
 }

@@ -6,9 +6,11 @@
         class="d-flex justify-content-between align-items-center bg-dark text-white p-3"
       >
         <h1 class="mb-0">Gerenciamento de Marcas</h1>
-        <button
+         <!-- Aqui vai exibir o botão só para o perfil admin e gerente -->
+        <button        
           class="btn btn-primary btn-rounded btn-shadow me-2"
           (click)="CadastrarModal()"
+          *ngIf="isAdmin() || isGerente"
         >
           <i class="bi bi-plus-circle me-1"></i> Novo
         </button>
@@ -46,8 +48,10 @@
             <td>{{ marca.nome }}</td>
             <td>
               <!-- Botão Editar -->
+               <!-- Aqui vai exibir o botão só para o perfil admin e gerente -->
               <button
                 class="btn btn-warning btn-sm btn-shadow me-1"
+                *ngIf="isAdmin() || isGerente"
                 (click)="editarModal(marca)"
                 title="Editar"
               >
@@ -55,8 +59,10 @@
               </button>
 
               <!-- Botão Excluir -->
+               <!-- Aqui vai exibir o botão só para o perfil admin-->
               <button
                 class="btn btn-danger btn-sm btn-shadow"
+                *ngIf="isAdmin()"
                 (click)="excluir(marca)"
                 title="Excluir"
               >

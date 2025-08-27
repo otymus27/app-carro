@@ -13,7 +13,7 @@ import {
 import { ToastService } from '../../services/toast.service';
 import { Marca } from '../../models/marca';
 import { MarcaService } from '../../services/marca.service';
-import { Proprietario } from '../../models/proprietario';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-marca',
@@ -27,6 +27,8 @@ import { Proprietario } from '../../models/proprietario';
   styleUrl: './marca.component.scss',
 })
 export class MarcaComponent {
+  private authService = inject(AuthService);
+
   lista: Marca[] = [];
   registroSelecionado!: Marca;
   //marcaSelecionada: Marca = { id: 0, nome: '' };
@@ -65,7 +67,7 @@ export class MarcaComponent {
         this.page,
         this.size,
         this.colunaOrdenada,
-        this.ordem,        
+        this.ordem
       )
       .subscribe({
         next: (resposta) => {
@@ -203,5 +205,16 @@ export class MarcaComponent {
         this.toastService.showError('Erro ao excluir proprietário!');
       },
     });
+  }
+
+  // ✅ Método para verificar se o usuário é ADMIN
+  isAdmin(): boolean {
+    const roles = this.authService.getLoggedInRoles();
+    return roles.includes('ADMIN');
+  }
+
+  isGerente(): boolean {
+    const roles = this.authService.getLoggedInRoles();
+    return roles.includes('GERENTE');
   }
 }
