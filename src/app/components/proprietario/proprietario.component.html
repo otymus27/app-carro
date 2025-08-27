@@ -168,7 +168,15 @@
           required
           class="form-control flex-grow-1"
         />
+        <div *ngIf="cpfError" class="text-danger mt-1">
+          {{ cpfError }}
+        </div>
       </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        {{ errorMessage }}
+      </div>
+
       <div *ngIf="cpf.invalid && (cpf.dirty || cpf.touched)" class="text-danger text-center">
         O campo é obrigatório.
       </div>

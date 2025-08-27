@@ -18,6 +18,7 @@ import { Proprietario } from '../../models/proprietario';
 import { ProprietarioService } from '../../services/proprietario.service';
 import { CpfMaskPipe } from '../../pipes/cpf-mask.pipe';
 import { TelefoneMaskPipe } from '../../pipes/telefone-mask.pipe';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-proprietario',
@@ -64,6 +65,11 @@ export class ProprietarioComponent {
   modalConfirmacaoExclusao!: TemplateRef<any>;
 
   modalRef!: MdbModalRef<any>;
+
+  // ✅ Adicione esta propriedade
+  cpfError: string | null = null;
+  // ✅ Adicione uma propriedade para mensagem geral
+  errorMessage: string | null = null;
 
   constructor() {
     this.listar();
@@ -155,6 +161,9 @@ export class ProprietarioComponent {
   }
 
   salvarProprietario(proprietario: Proprietario) {
+    // ✅ Limpa as mensagens de erro antes de cada tentativa
+    this.cpfError = null;
+    this.errorMessage = null;
     // Validação front-end
     if (
       !proprietario.nome?.trim() ||
@@ -189,11 +198,19 @@ export class ProprietarioComponent {
           this.listar();
           this.modalRef.close();
         },
-        error: (err) => {
-          // ✅ Use o serviço de toast
-          this.toastService.showError(
-            `Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`
-          );
+        error: (err: HttpErrorResponse) => {
+          // ✅ Lógica de tratamento de cpf duplicado
+          if (err.status === 400 && err.error === 'CPF já cadastrado!') {
+            this.cpfError =
+              'Este CPF já está cadastrado. Por favor, use outro CPF.';
+            this.toastService.showError(this.cpfError);
+          } else {
+            this.errorMessage = `Erro ao salvar: ${
+              err.error || 'Erro desconhecido.'
+            }`;
+            this.toastService.showError(this.errorMessage);
+          }
+          console.error('Erro de cadastro:', err);
         },
       });
     } else {
@@ -207,11 +224,16 @@ export class ProprietarioComponent {
             this.listar();
             this.modalRef.close();
           },
-          error: (err) => {
-            // ✅ Use o serviço de toast
-            this.toastService.showError(
-              `Erro: ${err.error?.mensagem || 'Erro desconhecido.'}`
-            );
+          error: (err: HttpErrorResponse) => {
+            // ✅ Tratamento de erro específico para CPF duplicado na atualização (se aplicável)
+            if (err.status === 400 && err.error === 'CPF já cadastrado!') {
+              this.cpfError = 'Este CPF já está cadastrado. Por favor, use outro CPF.';
+              this.toastService.showError(this.cpfError);
+            } else {
+              this.errorMessage = `Erro ao atualizar: ${err.error || 'Erro desconhecido.'}`;
+              this.toastService.showError(this.errorMessage);
+            }
+            console.error('Erro de atualização:', err);
           },
         });
     }
