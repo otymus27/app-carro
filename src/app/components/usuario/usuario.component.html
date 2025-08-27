@@ -79,7 +79,7 @@
                 <i class="bi bi-pencil-square"></i>
               </button>
               <button
-                class="btn btn-danger btn-sm btn-shadow"
+                class="btn btn-danger btn-sm btn-shadow me-1"
                 (click)="excluir(usuario)"
                 title="Excluir Usuário"
               >
@@ -87,9 +87,11 @@
               </button>
 
               <button 
-                class="btn btn-danger" 
-                (click)="resetarSenha(usuario.id)">
-                Resetar Senha
+                class="btn btn-warning btn-sm btn-shadow mr-2"
+                (click)="resetarSenha(usuario.id)"
+                title="Resetar Senha">
+                <i class="fas fa-key"></i>
+                <span class="visually-hidden">Resetar Senha</span>
               </button>
               
             </td>

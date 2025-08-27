@@ -9,7 +9,6 @@ import { AuthGuard } from './guards/auth.guard';
 import { UsuarioComponent } from './components/usuario/usuario.component';
 import { MarcaComponentRelatorio } from './components/relatorio/marca/relatorio.marca.component';
 import { RedefinicaoSenhaComponent } from './components/redefinicao-senha/redefinicao-senha.component';
-import { ResetSenhaComponent } from './components/reset-senha/reset-senha.component';
 
 export const routes: Routes = [
   // Redireciona a rota base para a página de login
@@ -65,9 +64,7 @@ export const routes: Routes = [
         path: 'usuarios',
         children: [
           { path: '', component: UsuarioComponent },
-          { path: 'gerenciar', component: UsuarioComponent },
-          // ✅ Nova rota aninhada para o administrador gerar a senha provisória
-          { path: 'gerar-senha-provisoria', component: ResetSenhaComponent },
+          { path: 'gerenciar', component: UsuarioComponent },          
         ],
       },
     ],

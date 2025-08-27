@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 })
 export class RedefinicaoSenhaComponent {
   id: number | null = null;
+  username: string = '';
   senhaProvisoria: string = '';
   novaSenha: string = '';
   mensagem: string | null = null;
@@ -23,9 +24,9 @@ export class RedefinicaoSenhaComponent {
   private router = inject(Router);
 
   redefinirSenha(): void {
-    if (this.id !== null && this.senhaProvisoria && this.novaSenha) {
+    if (this.username !== null && this.senhaProvisoria && this.novaSenha) {
       const dto: ResetSenhaRequest = {
-        id: this.id,
+        username: this.username,
         senhaProvisoria: this.senhaProvisoria,
         novaSenha: this.novaSenha,
       };
@@ -49,5 +50,10 @@ export class RedefinicaoSenhaComponent {
         },
       });
     }
+  }
+
+  // ✅ Método para cancelar e voltar para a tela de login
+  cancelar(): void {
+    this.router.navigate(['/login']);
   }
 }

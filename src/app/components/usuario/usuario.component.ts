@@ -338,7 +338,8 @@ export class UsuarioComponent {
           // O usuário confirmou. Faça a chamada para o serviço.
           this.recuperarSenhaService.gerarSenhaProvisoria(id).subscribe({
             next: (response) => {
-              const senhaGerada = response.senhaGerada;
+              // ✅ 2. Aqui armazenamos o resultado vindo do backend
+              const senhaGerada = response.mensagem;
               // ✅ 3. Abre o modal de informação para exibir a senha
               this.modalService.open(InformacaoComponent, {
                 data: {

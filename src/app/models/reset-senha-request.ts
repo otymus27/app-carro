@@ -1,5 +1,5 @@
-export class ResetSenhaRequest {
-  id!: number;
+export class ResetSenhaRequest {  
+  username!:string;
   senhaProvisoria!: string;
   novaSenha!: string;
 }
