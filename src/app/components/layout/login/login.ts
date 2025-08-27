@@ -1,47 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
+import { MdbRippleModule } from 'mdb-angular-ui-kit/ripple';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, MdbFormsModule],
+  imports: [FormsModule, CommonModule, MdbFormsModule,MdbRippleModule],
   templateUrl: './../login/login.html',
   styleUrl: './../login/login.scss',
 })
 export class Login {
-  // Objeto para armazenar as credenciais do formulário
+  // A propriedade 'credentials' já está em uso, vamos mantê-la
   credentials = {
     username: '',
-    password: '',
+    password: ''
   };
+  errorMessage: string | null = null;
+  loading = false; // ✅ Propriedade para controlar o estado de carregamento
 
-  // Injetando o Router e o AuthService no construtor
-  constructor(private authService: AuthService, private router: Router) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  // Ação que será chamada ao clicar no botão "Entrar"
+  constructor() {}
+
   onSubmit(): void {
-    // Chama o método login do AuthService, passando o objeto de credenciais
-    this.authService.login(this.credentials).subscribe(
-      () => {
-        // Se o login for bem-sucedido (o token foi salvo pelo AuthService)
-        console.log('Login bem-sucedido!');
-        // Redireciona o usuário para a página protegida (ex: dashboard)
-        this.router.navigate(['/admin/home']);
+    this.errorMessage = null; // Limpa a mensagem de erro anterior
+    this.loading = true; // Ativa o spinner
 
-        console.log(this.credentials);
+    this.authService.login(this.credentials).subscribe({
+      next: (response) => {
+        // A navegação já é tratada dentro do authService
+        this.loading = false; // Desativa o spinner
       },
-      (error) => {
-        // Se houver um erro na requisição (ex: 401 Unauthorized)
-        console.error('Login falhou:', error);
-        // Exibe uma mensagem de erro para o usuário
-        alert('Usuário ou senha inválidos.');
-        // Opcional: limpa o formulário após a tentativa falha
-        this.credentials.password = '';
+      error: (error) => {
+        this.loading = false; // Desativa o spinner
+        if (error.status === 401) {
+          this.errorMessage = 'Credenciais inválidas. Verifique seu usuário e senha.';
+        } else {
+          this.errorMessage = 'Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde.';
+          console.error('Erro de login:', error);
+        }
       }
-    );
+    });
   }
 }
